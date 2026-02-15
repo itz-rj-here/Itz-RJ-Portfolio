@@ -1,13 +1,51 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState, useEffect, useCallback } from "react";
+import Header from "@/components/Header";
+import HeroSection from "@/components/HeroSection";
+import AboutSection from "@/components/AboutSection";
+import SkillsSection from "@/components/SkillsSection";
+import PortfolioSection from "@/components/PortfolioSection";
+import CertificatesSection from "@/components/CertificatesSection";
+import ContactSection from "@/components/ContactSection";
+import Footer from "@/components/Footer";
+import IntroScreen from "@/components/IntroScreen";
 
 const Index = () => {
+  const [showIntro, setShowIntro] = useState(false);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    const played = localStorage.getItem("itzrj-intro-played");
+    if (!played) {
+      setShowIntro(true);
+    } else {
+      setReady(true);
+    }
+  }, []);
+
+  const handleIntroComplete = useCallback(() => {
+    localStorage.setItem("itzrj-intro-played", "true");
+    setShowIntro(false);
+    setReady(true);
+  }, []);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
-    </div>
+    <>
+      {showIntro && <IntroScreen onComplete={handleIntroComplete} />}
+      {ready && (
+        <div className="min-h-screen">
+          <Header />
+          <main>
+            <HeroSection />
+            <AboutSection />
+            <SkillsSection />
+            <PortfolioSection />
+            <CertificatesSection />
+            <ContactSection />
+          </main>
+          <Footer />
+        </div>
+      )}
+    </>
   );
 };
 
