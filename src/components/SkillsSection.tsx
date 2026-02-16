@@ -35,23 +35,24 @@ const SkillsSection = () => {
               transition={{ delay: 0.2 + catIdx * 0.15 }}
             >
               <h3 className="text-lg font-display font-semibold text-foreground mb-6">{category.name}</h3>
-              <div className="space-y-4">
-                {category.skills.map((skill) => (
-                  <div key={skill.name}>
-                    <div className="flex justify-between text-sm mb-1.5">
-                      <span className="text-muted-foreground">{skill.name}</span>
-                      <span className="text-primary text-xs">{skill.level}%</span>
-                    </div>
-                    <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
-                      <motion.div
-                        className="h-full rounded-full"
-                        style={{ background: "linear-gradient(90deg, hsl(211 78% 51%), hsl(207 90% 68%))" }}
-                        initial={{ width: 0 }}
-                        animate={inView ? { width: `${skill.level}%` } : {}}
-                        transition={{ duration: 1, delay: 0.5 + catIdx * 0.1 }}
-                      />
-                    </div>
-                  </div>
+              <div className="flex flex-wrap gap-2.5">
+                {category.skills.map((skill, skillIdx) => (
+                  <motion.span
+                    key={skill.name}
+                    className="px-4 py-2 rounded-xl bg-secondary border border-border text-sm text-muted-foreground cursor-default select-none"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={inView ? { opacity: 1, scale: 1 } : {}}
+                    transition={{ delay: 0.4 + catIdx * 0.1 + skillIdx * 0.05 }}
+                    whileHover={{
+                      scale: 1.1,
+                      backgroundColor: "hsl(211 78% 51% / 0.15)",
+                      borderColor: "hsl(211 78% 51% / 0.4)",
+                      color: "hsl(207 90% 68%)",
+                      boxShadow: "0 0 20px hsl(211 78% 51% / 0.2)",
+                    }}
+                  >
+                    {skill.name}
+                  </motion.span>
                 ))}
               </div>
             </motion.div>
