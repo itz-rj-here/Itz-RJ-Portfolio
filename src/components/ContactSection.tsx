@@ -1,12 +1,34 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
-import { Send, Github, Linkedin, Twitter, Mail, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
+import {
+  Send,
+  Github,
+  Linkedin,
+  Instagram,
+  Facebook,
+  Mail,
+  MapPin,
+  CheckCircle,
+  AlertCircle,
+  Loader2,
+} from "lucide-react";
+import { socialLinks } from "@/data/portfolio";
 
 const ContactSection = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+
+  const iconMap = {
+    Github,
+    Linkedin,
+    Instagram,
+    Facebook,
+    Mail,
+  } as const;
+
+  const emailLink = socialLinks.find((link) => link.name === "Email");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,7 +39,7 @@ const ContactSection = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          access_key: "YOUR_WEB3FORMS_ACCESS_KEY", // Replace with your Web3Forms access key
+          access_key: "aaa42eee-7b7e-47c0-ae6e-45c60d2fde6e", // Replace with your Web3Forms access key
           name: form.name,
           email: form.email,
           message: form.message,
@@ -137,27 +159,45 @@ const ContactSection = () => {
             transition={{ delay: 0.3 }}
           >
             <div className="glass-card p-5 rounded-2xl">
+              <MapPin className="w-5 h-5 text-primary mb-2" />
+              <p className="text-xs text-muted-foreground mb-1">Location</p>
+              <p className="text-foreground text-sm">Dhaka, Bangladesh</p>
+            </div>
+
+            <div className="glass-card p-5 rounded-2xl">
               <Mail className="w-5 h-5 text-primary mb-2" />
               <p className="text-xs text-muted-foreground mb-1">Email</p>
-              <a href="mailto:hello@itzrj.dev" className="text-foreground text-sm hover:text-primary transition-colors">hello@itzrj.dev</a>
+              {emailLink && (
+                <a
+                  href={emailLink.url}
+                  className="text-foreground text-sm hover:text-primary transition-colors"
+                >
+                  {emailLink.url.replace("mailto:", "")}
+                </a>
+              )}
             </div>
 
             <div className="glass-card p-5 rounded-2xl">
               <p className="text-xs text-muted-foreground mb-3">Follow me</p>
               <div className="flex gap-3">
-                {[
-                  { icon: Github, url: "#" },
-                  { icon: Linkedin, url: "#" },
-                  { icon: Twitter, url: "#" },
-                ].map(({ icon: Icon, url }, i) => (
-                  <a
-                    key={i}
-                    href={url}
-                    className="w-9 h-9 rounded-lg bg-secondary border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/30 transition-all"
-                  >
-                    <Icon className="w-4 h-4" />
-                  </a>
-                ))}
+                {socialLinks
+                  .filter((link) => link.name !== "Email")
+                  .map((link) => {
+                    const Icon = iconMap[link.icon as keyof typeof iconMap];
+                    if (!Icon) return null;
+
+                    return (
+                      <a
+                        key={link.name}
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-9 h-9 rounded-lg bg-secondary border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/30 transition-all"
+                      >
+                        <Icon className="w-4 h-4" />
+                      </a>
+                    );
+                  })}
               </div>
             </div>
           </motion.div>

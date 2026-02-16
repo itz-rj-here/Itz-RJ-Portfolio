@@ -50,7 +50,8 @@ const ProjectDetail = () => {
           {/* Project image gallery */}
           <div className="relative rounded-2xl glass-card overflow-hidden mb-10 group">
             <div
-              className="h-64 md:h-80 flex items-center justify-center cursor-pointer"
+              className="w-full flex items-center justify-center cursor-pointer"
+              style={{ aspectRatio: "16 / 9" }}
               onClick={() => setLightboxOpen(true)}
             >
               <AnimatePresence mode="wait">
@@ -136,6 +137,8 @@ const ProjectDetail = () => {
             {project.liveUrl && (
               <a
                 href={project.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium flex items-center gap-2 hover:bg-primary/90 transition-colors"
               >
                 Live Demo <ExternalLink className="w-4 h-4" />
@@ -144,6 +147,8 @@ const ProjectDetail = () => {
             {project.githubUrl && (
               <a
                 href={project.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="px-6 py-3 rounded-lg border border-border text-foreground flex items-center gap-2 hover:bg-secondary transition-colors"
               >
                 GitHub <Github className="w-4 h-4" />

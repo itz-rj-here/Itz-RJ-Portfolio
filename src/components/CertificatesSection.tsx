@@ -78,9 +78,13 @@ const CertificatesSection = () => {
               return (
                 <>
                   {/* Large certificate image */}
-                  <div className="w-full bg-gradient-to-br from-primary/5 to-accent/5 flex items-center justify-center min-h-[300px]">
+                  <div className="w-full bg-gradient-to-br from-primary/5 to-accent/5 flex items-center justify-center p-4 md:p-8">
                     {cert.image && cert.image !== "/placeholder.svg" ? (
-                      <img src={cert.image} alt={cert.title} className="w-full max-h-[60vh] object-contain" />
+                      <img
+                        src={cert.image}
+                        alt={cert.title}
+                        className="w-auto max-w-full max-h-[70vh] object-contain rounded-xl shadow-lg"
+                      />
                     ) : (
                       <div className="text-center py-12">
                         <Award className="w-20 h-20 text-primary/30 mx-auto mb-4" />

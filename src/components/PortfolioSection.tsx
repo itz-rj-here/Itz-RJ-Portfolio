@@ -40,8 +40,20 @@ const PortfolioSection = () => {
               onClick={() => navigate(`/project/${project.id}`)}
             >
               {/* Thumbnail */}
-              <div className="h-48 bg-gradient-to-br from-primary/10 to-accent/5 flex items-center justify-center relative overflow-hidden">
-                <span className="text-4xl font-display font-bold text-muted-foreground/20">{project.title.charAt(0)}</span>
+              <div
+                className="relative w-full overflow-hidden bg-gradient-to-br from-primary/10 to-accent/5"
+                style={{ aspectRatio: "16 / 9" }}
+              >
+                {project.image && (
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).style.display = "none";
+                    }}
+                  />
+                )}
                 <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
 
