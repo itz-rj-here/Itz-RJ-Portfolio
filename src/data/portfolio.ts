@@ -4,6 +4,7 @@ export interface Project {
   description: string;
   shortDescription: string;
   image: string;
+  images?: string[];
   technologies: string[];
   features: string[];
   liveUrl?: string;
@@ -30,6 +31,7 @@ export const projects: Project[] = [
     description: "A full-featured e-commerce platform with product management, cart functionality, and payment integration. Built with modern web technologies for optimal performance and user experience.",
     shortDescription: "Modern e-commerce solution with seamless checkout experience.",
     image: "/placeholder.svg",
+    images: ["/placeholder.svg", "/placeholder.svg", "/placeholder.svg"],
     technologies: ["React", "Tailwind CSS", "Firebase", "Stripe"],
     features: ["Product catalog with filtering", "Shopping cart & wishlist", "Secure payment processing", "Order tracking dashboard"],
     liveUrl: "#",
@@ -41,6 +43,7 @@ export const projects: Project[] = [
     description: "A collaborative task management application featuring real-time updates, team workspaces, and productivity analytics. Designed to streamline project workflows.",
     shortDescription: "Collaborative task manager with real-time team features.",
     image: "/placeholder.svg",
+    images: ["/placeholder.svg", "/placeholder.svg", "/placeholder.svg"],
     technologies: ["React", "TypeScript", "Node.js", "MongoDB"],
     features: ["Drag & drop task boards", "Real-time collaboration", "Productivity analytics", "Team workspace management"],
     liveUrl: "#",
@@ -52,6 +55,7 @@ export const projects: Project[] = [
     description: "An elegant weather dashboard providing real-time forecasts, interactive maps, and historical data visualization. Features location-based automatic updates.",
     shortDescription: "Real-time weather tracking with beautiful data visualization.",
     image: "/placeholder.svg",
+    images: ["/placeholder.svg", "/placeholder.svg", "/placeholder.svg"],
     technologies: ["React", "Tailwind CSS", "OpenWeather API", "Chart.js"],
     features: ["5-day forecast", "Interactive weather maps", "Location auto-detect", "Historical data charts"],
     liveUrl: "#",
@@ -63,6 +67,7 @@ export const projects: Project[] = [
     description: "A dynamic portfolio generator that allows developers to create stunning portfolios with customizable themes, sections, and deployment options.",
     shortDescription: "Create stunning developer portfolios with zero effort.",
     image: "/placeholder.svg",
+    images: ["/placeholder.svg", "/placeholder.svg", "/placeholder.svg"],
     technologies: ["React", "JavaScript", "CSS3", "GitHub API"],
     features: ["Customizable themes", "GitHub integration", "One-click deploy", "SEO optimization"],
     liveUrl: "#",
