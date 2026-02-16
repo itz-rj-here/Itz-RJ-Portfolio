@@ -14,16 +14,10 @@ const Index = () => {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const played = localStorage.getItem("itzrj-intro-played");
-    if (!played) {
-      setShowIntro(true);
-    } else {
-      setReady(true);
-    }
+    setShowIntro(true);
   }, []);
 
   const handleIntroComplete = useCallback(() => {
-    localStorage.setItem("itzrj-intro-played", "true");
     setShowIntro(false);
     setReady(true);
   }, []);
