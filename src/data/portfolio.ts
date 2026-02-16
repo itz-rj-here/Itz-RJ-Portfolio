@@ -31,8 +31,8 @@ export const projects: Project[] = [
     title: "MYNT: Material You New Tab",
     description: "MYNT: Material You New Tab is a browser extension designed to enhance the new tab experience with a visually appealing interface inspired by Google’s Material You design system. The extension includes features like customizable themes, clock animations, and more, offering users a unique and dynamic browsing experience. The main author of the project is XengShi, and I am a collaborator and maintainer, contributing to its development and ensuring smooth updates and improvements.",
     shortDescription: "MYNT: Material You New Tab is a versatile browser extension that personalizes your New Tab page with customizable themes, a welcoming message, and various handy tools, all while integrating seamlessly with your preferred search engine.",
-    image: "/src/images/Project/portfolio1.png",
-    images: ["/src/images/Project/portfolio1.png"], // , "/placeholder.svg", "/placeholder.svg"
+    image: "./src/images/Project/portfolio1.png",
+    images: ["./src/images/Project/portfolio1.png"], // , "/placeholder.svg", "/placeholder.svg"
     technologies: ["HTML", "CSS", "JavaScript"],
     features: [
       "Integrated Search",
@@ -58,8 +58,8 @@ export const projects: Project[] = [
     title: "TATBD's Ultimate Wallpapers",
     description: "TATBD's Ultimate Wallpapers is a project aimed at providing high-quality wallpapers for various devices, curated by the TeenAgeTechBD community. The project offers a collection of stunning, diverse wallpapers that cater to different tastes and preferences. The main author of the project is Saimon Islam Prantik, and I am a collaborator and maintainer, working to expand the wallpaper collection and maintain the project.",
     shortDescription: "High-quality wallpaper collection curated by the TeenAgeTechBD community.",
-    image: "/src/images/Project/portfolio2.png",
-    images: ["/src/images/Project/portfolio2.png"],
+    image: "./src/images/Project/portfolio2.png",
+    images: ["./src/images/Project/portfolio2.png"],
     technologies: ["HTML", "CSS", "JavaScript"],
     features: [
       "Curated wallpaper collections",
@@ -74,8 +74,8 @@ export const projects: Project[] = [
     title: "Elevate Clothing",
     description: "Elevate Clothing is a fashion e-commerce platform that offers a curated selection of trendy apparel and accessories. The project focuses on providing a seamless shopping experience with features like personalized recommendations, user reviews, and a secure checkout process. I'm the main author and Co-Founder of the project, and maintaining, contributing to its development and ensuring a smooth user experience.",
     shortDescription: "Fashion e-commerce platform offering a seamless, personalized shopping experience.",
-    image: "/src/images/Project/portfolio3.png",
-    images: ["/src/images/Project/portfolio3.png"],
+    image: "./src/images/Project/portfolio3.png",
+    images: ["./src/images/Project/portfolio3.png"],
     technologies: ["Vite", "TypeScript", "React", "Tailwind CSS"],
     features: [
       "Personalized recommendations",
@@ -92,8 +92,8 @@ export const projects: Project[] = [
       "Masud Hasan — Portfolio is a modern, responsive portfolio website showcasing the work and profile of Masud Hasan, a Lecturer, Online Educator, Actor, Criminologist & Digital Creator from Dhaka, Bangladesh. The site highlights his expertise in ICT education and digital creation with smooth animations and an accessible, visually engaging design, built for fast performance and easy maintenance. Powered by React 18, Vite, TypeScript, Tailwind CSS, shadcn/ui, Radix UI, and Framer Motion, it provides a solid and scalable foundation for his personal brand.",
     shortDescription:
       "A modern, responsive portfolio for Masud Hasan featuring dark/light mode, animated sections, and an accessible UI built with React, TypeScript, and Tailwind CSS.",
-    image: "/src/images/Project/portfolio4.png",
-    images: ["/src/images/Project/portfolio4.png"],
+    image: "./src/images/Project/portfolio4.png",
+    images: ["./src/images/Project/portfolio4.png"],
     technologies: ["React 18", "Vite", "TypeScript", "Tailwind CSS", "shadcn/ui", "Radix UI", "Framer Motion"],
     features: [
       "Responsive design",
@@ -114,7 +114,7 @@ export const certificates: Certificate[] = [
     issuer: "Sololearn",
     issuerUrl: "https://www.sololearn.com/",
     date: "2025",
-    image: "/src/images/Certificate/cert1.png",
+    image: "./src/images/Certificate/cert1.png",
   },
   {
     id: "cert-2",
@@ -122,7 +122,7 @@ export const certificates: Certificate[] = [
     issuer: "Let's Know The World",
     issuerUrl: "https://www.facebook.com/Letsknowtheworldofficial/",
     date: "2025",
-    image: "/src/images/Certificate/cert2.png",
+    image: "./src/images/Certificate/cert2.png",
   },
   {
     id: "cert-3",
@@ -130,7 +130,7 @@ export const certificates: Certificate[] = [
     issuer: "Let's Know The World",
     issuerUrl: "https://www.facebook.com/Letsknowtheworldofficial/",
     date: "2025",
-    image: "/src/images/Certificate/cert3.png",
+    image: "./src/images/Certificate/cert3.png",
   },
   {
     id: "cert-4",
@@ -138,7 +138,7 @@ export const certificates: Certificate[] = [
     issuer: "Let's Know The World",
     issuerUrl: "https://www.facebook.com/Letsknowtheworldofficial/",
     date: "2025",
-    image: "/src/images/Certificate/cert4.png",
+    image: "./src/images/Certificate/cert4.png",
   },
   {
     id: "cert-5",
@@ -146,7 +146,7 @@ export const certificates: Certificate[] = [
     issuer: "ICT Olympiad Bangladesh",
     issuerUrl: "https://www.ictolympiadbangladesh.com/",
     date: "2026",
-    image: "/src/images/Certificate/cert5.png",
+    image: "./src/images/Certificate/cert5.png",
   },
 ];
 

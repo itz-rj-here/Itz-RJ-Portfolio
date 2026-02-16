@@ -1,7 +1,7 @@
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
-import favicon from "/src/images/PFP/logo.png";
+import favicon from "./src/images/PFP/logo.png";
 
 const ensureFavicon = (href: string) => {
   const existing =

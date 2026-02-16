@@ -2,10 +2,10 @@ import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 
 const aboutImages = [
-  { src: "/src/images/PFP/pfp.png", alt: "Default profile image" },
-  { src: "/src/images/PFP/pfp2.png", alt: "Real profile image" },
-  { src: "/src/images/PFP/pfp3.png", alt: "At the DU" },
-  { src: "/src/images/PFP/pfp4.png", alt: "At a tour" },
+  { src: "./src/images/PFP/pfp.png", alt: "Default profile image" },
+  { src: "./src/images/PFP/pfp2.png", alt: "Real profile image" },
+  { src: "./src/images/PFP/pfp3.png", alt: "At the DU" },
+  { src: "./src/images/PFP/pfp4.png", alt: "At a tour" },
 ];
 
 const AboutSection = () => {
