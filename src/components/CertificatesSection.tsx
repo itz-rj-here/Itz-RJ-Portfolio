@@ -94,7 +94,20 @@ const CertificatesSection = () => {
                   </div>
                   <div className="p-6 text-center">
                     <h3 className="font-display text-xl font-bold text-foreground mb-1">{cert.title}</h3>
-                    <p className="text-muted-foreground">{cert.issuer}</p>
+                    <p className="text-muted-foreground">
+                      {cert.issuerUrl ? (
+                        <a
+                          href={cert.issuerUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="underline underline-offset-2 decoration-dotted hover:decoration-solid hover:text-foreground"
+                        >
+                          {cert.issuer}
+                        </a>
+                      ) : (
+                        cert.issuer
+                      )}
+                    </p>
                     <p className="text-primary text-sm mt-1">{cert.date}</p>
                   </div>
                 </>

@@ -15,6 +15,7 @@ export interface Certificate {
   id: string;
   title: string;
   issuer: string;
+  issuerUrl?: string;
   date: string;
   image: string;
 }
@@ -107,11 +108,46 @@ export const projects: Project[] = [
 ];
 
 export const certificates: Certificate[] = [
-  { id: "cert-1", title: "Introduction to HTML", issuer: "Sololearn", date: "2025", image: "/src/images/Certificate/cert1.png" },
-  { id: "cert-2", title: "AI Magic & Content Creation", issuer: "ICT Olympiad Bangladesh", date: "2026", image: "/src/images/Certificate/cert2.png" },
-  { id: "cert-3", title: "Participation in General Knowledge Quiz", issuer: "Let's Know The World", date: "2025", image: "/src/images/Certificate/cert3.png" },
-  { id: "cert-4", title: "Participation in IQ Quiz", issuer: "Let's Know The World", date: "2025", image: "/src/images/Certificate/cert4.png" },
-  { id: "cert-5", title: "Participation in English Quiz", issuer: "Let's Know The World", date: "2025", image: "/src/images/Certificate/cert5.png" },
+  {
+    id: "cert-1",
+    title: "Introduction to HTML",
+    issuer: "Sololearn",
+    issuerUrl: "https://www.sololearn.com/",
+    date: "2025",
+    image: "/src/images/Certificate/cert1.png",
+  },
+  {
+    id: "cert-2",
+    title: "Participation in General Knowledge Quiz",
+    issuer: "Let's Know The World",
+    issuerUrl: "https://www.facebook.com/Letsknowtheworldofficial/",
+    date: "2025",
+    image: "/src/images/Certificate/cert2.png",
+  },
+  {
+    id: "cert-3",
+    title: "Participation in IQ Quiz",
+    issuer: "Let's Know The World",
+    issuerUrl: "https://www.facebook.com/Letsknowtheworldofficial/",
+    date: "2025",
+    image: "/src/images/Certificate/cert3.png",
+  },
+  {
+    id: "cert-4",
+    title: "Participation in English Quiz",
+    issuer: "Let's Know The World",
+    issuerUrl: "https://www.facebook.com/Letsknowtheworldofficial/",
+    date: "2025",
+    image: "/src/images/Certificate/cert4.png",
+  },
+  {
+    id: "cert-5",
+    title: "AI Magic & Content Creation",
+    issuer: "ICT Olympiad Bangladesh",
+    issuerUrl: "https://www.ictolympiadbangladesh.com/",
+    date: "2026",
+    image: "/src/images/Certificate/cert5.png",
+  },
 ];
 
 export const skillCategories: SkillCategory[] = [

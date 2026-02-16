@@ -1,6 +1,6 @@
-# RJ&apos;s Blue Spark
+# It&apos;z RJ Portfolio
 
-This repository contains the source code for the **RJ&apos;s Blue Spark** portfolio and project showcase site.
+This repository contains the source code for **It&apos;z RJ Portfolio** – a personal portfolio website to showcase projects, skills, and contact information.
 
 ## Getting started
 
