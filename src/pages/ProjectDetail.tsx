@@ -90,10 +90,20 @@ const ProjectDetail = () => {
           >
             <h2 className="text-xl font-display font-semibold text-foreground mb-4">Technologies Used</h2>
             <div className="flex flex-wrap gap-2">
-              {project.technologies.map((tech) => (
-                <span key={tech} className="px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm border border-primary/20">
+              {project.technologies.map((tech, i) => (
+                <motion.span
+                  key={tech}
+                  className="px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm border border-primary/20 cursor-default"
+                  whileHover={{
+                    scale: 1.15,
+                    backgroundColor: "hsl(211 78% 51% / 0.25)",
+                    boxShadow: "0 0 20px hsl(211 78% 51% / 0.3)",
+                    borderColor: "hsl(211 78% 51% / 0.5)",
+                  }}
+                  transition={{ type: "spring", stiffness: 400, damping: 15 }}
+                >
                   {tech}
-                </span>
+                </motion.span>
               ))}
             </div>
           </motion.div>
