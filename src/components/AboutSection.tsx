@@ -1,10 +1,24 @@
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
-import { useRef } from "react";
+import { motion, useInView, AnimatePresence } from "framer-motion";
+import { useRef, useState, useEffect } from "react";
+
+const aboutImages = [
+  { src: "/placeholder.svg", alt: "Working on code" },
+  { src: "/placeholder.svg", alt: "At a hackathon" },
+  { src: "/placeholder.svg", alt: "Team collaboration" },
+  { src: "/placeholder.svg", alt: "Speaking at event" },
+];
 
 const AboutSection = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
+  const [currentImage, setCurrentImage] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImage((prev) => (prev + 1) % aboutImages.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <section id="about" className="py-24 md:py-32 relative">
@@ -27,7 +41,7 @@ const AboutSection = () => {
         </motion.h2>
 
         <div className="grid md:grid-cols-2 gap-12 items-center max-w-5xl mx-auto">
-          {/* Profile image */}
+          {/* Profile image carousel */}
           <motion.div
             className="flex justify-center"
             initial={{ opacity: 0, x: -40 }}
@@ -35,10 +49,42 @@ const AboutSection = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <div className="relative">
-              <div className="w-64 h-64 md:w-80 md:h-80 rounded-2xl overflow-hidden glow-border">
-                <div className="w-full h-full bg-gradient-to-br from-primary/20 to-accent/10 flex items-center justify-center">
-                  <span className="text-7xl font-display font-bold gradient-text">RJ</span>
-                </div>
+              <div className="w-64 h-64 md:w-80 md:h-80 rounded-2xl overflow-hidden glow-border relative">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentImage}
+                    className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/10 flex items-center justify-center"
+                    initial={{ opacity: 0, scale: 1.1 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.8, ease: "easeInOut" }}
+                  >
+                    <img
+                      src={aboutImages[currentImage].src}
+                      alt={aboutImages[currentImage].alt}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = "none";
+                        (e.target as HTMLImageElement).parentElement!.innerHTML =
+                          '<span class="text-7xl font-display font-bold gradient-text">RJ</span>';
+                      }}
+                    />
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+              {/* Image indicators */}
+              <div className="flex justify-center gap-2 mt-4">
+                {aboutImages.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setCurrentImage(i)}
+                    className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                      i === currentImage
+                        ? "bg-primary w-6"
+                        : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
+                    }`}
+                  />
+                ))}
               </div>
               <div className="absolute -inset-1 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/10 -z-10 blur-sm" />
             </div>

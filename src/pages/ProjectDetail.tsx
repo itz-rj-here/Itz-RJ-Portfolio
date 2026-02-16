@@ -1,12 +1,15 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { ArrowLeft, ExternalLink, Github } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowLeft, ExternalLink, Github, ChevronLeft, ChevronRight } from "lucide-react";
 import { projects } from "@/data/portfolio";
+import { useState } from "react";
 
 const ProjectDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const project = projects.find((p) => p.id === id);
+  const [currentImg, setCurrentImg] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
   if (!project) {
     return (
@@ -21,6 +24,10 @@ const ProjectDetail = () => {
     );
   }
 
+  const images = project.images?.length ? project.images : [project.image];
+  const prevImg = () => setCurrentImg((p) => (p - 1 + images.length) % images.length);
+  const nextImg = () => setCurrentImg((p) => (p + 1) % images.length);
+
   return (
     <div className="min-h-screen gradient-bg">
       <div className="container mx-auto px-4 md:px-8 py-8">
@@ -34,17 +41,80 @@ const ProjectDetail = () => {
           <ArrowLeft className="w-4 h-4" /> Back to Home
         </motion.button>
 
-        {/* Hero */}
         <motion.div
           className="max-w-4xl mx-auto"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          {/* Project image */}
-          <div className="h-64 md:h-80 rounded-2xl glass-card overflow-hidden mb-10 flex items-center justify-center">
-            <span className="text-8xl font-display font-bold text-muted-foreground/10">{project.title.charAt(0)}</span>
+          {/* Project image gallery */}
+          <div className="relative rounded-2xl glass-card overflow-hidden mb-10 group">
+            <div
+              className="h-64 md:h-80 flex items-center justify-center cursor-pointer"
+              onClick={() => setLightboxOpen(true)}
+            >
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={currentImg}
+                  src={images[currentImg]}
+                  alt={`${project.title} screenshot ${currentImg + 1}`}
+                  className="w-full h-full object-cover"
+                  initial={{ opacity: 0, x: 40 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -40 }}
+                  transition={{ duration: 0.4 }}
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = "none";
+                  }}
+                />
+              </AnimatePresence>
+            </div>
+
+            {images.length > 1 && (
+              <>
+                <button
+                  onClick={prevImg}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-background/70 backdrop-blur-sm flex items-center justify-center text-foreground opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={nextImg}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-background/70 backdrop-blur-sm flex items-center justify-center text-foreground opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                  {images.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setCurrentImg(i)}
+                      className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                        i === currentImg ? "bg-primary w-5" : "bg-foreground/30"
+                      }`}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
           </div>
+
+          {/* Thumbnail strip */}
+          {images.length > 1 && (
+            <div className="flex gap-2 mb-10 overflow-x-auto pb-2">
+              {images.map((img, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentImg(i)}
+                  className={`shrink-0 w-20 h-14 rounded-lg overflow-hidden border-2 transition-all ${
+                    i === currentImg ? "border-primary" : "border-transparent opacity-60 hover:opacity-100"
+                  }`}
+                >
+                  <img src={img} alt={`Thumbnail ${i + 1}`} className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
 
           <h1 className="text-3xl md:text-5xl font-display font-bold text-foreground mb-4">{project.title}</h1>
           <p className="text-muted-foreground text-lg leading-relaxed mb-8 max-w-3xl">{project.description}</p>
@@ -90,7 +160,7 @@ const ProjectDetail = () => {
           >
             <h2 className="text-xl font-display font-semibold text-foreground mb-4">Technologies Used</h2>
             <div className="flex flex-wrap gap-2">
-              {project.technologies.map((tech, i) => (
+              {project.technologies.map((tech) => (
                 <motion.span
                   key={tech}
                   className="px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm border border-primary/20 cursor-default"
@@ -126,6 +196,45 @@ const ProjectDetail = () => {
           </motion.div>
         </motion.div>
       </div>
+
+      {/* Lightbox */}
+      <AnimatePresence>
+        {lightboxOpen && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-md"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setLightboxOpen(false)}
+          >
+            <motion.img
+              src={images[currentImg]}
+              alt="Full view"
+              className="max-w-[90vw] max-h-[85vh] rounded-xl object-contain"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            />
+            {images.length > 1 && (
+              <>
+                <button
+                  onClick={(e) => { e.stopPropagation(); prevImg(); }}
+                  className="absolute left-6 w-10 h-10 rounded-full bg-background/70 backdrop-blur-sm flex items-center justify-center text-foreground hover:bg-background"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={(e) => { e.stopPropagation(); nextImg(); }}
+                  className="absolute right-6 w-10 h-10 rounded-full bg-background/70 backdrop-blur-sm flex items-center justify-center text-foreground hover:bg-background"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
