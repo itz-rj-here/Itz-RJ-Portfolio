@@ -148,6 +148,14 @@ export const certificates: Certificate[] = [
     date: "2026",
     image: "https://i.ibb.co.com/xqWnYsz5/cert5.png",
   },
+    {
+    id: "cert-6",
+    title: "Introduction to CSS",
+    issuer: "Sololearn",
+    issuerUrl: "https://www.sololearn.com/",
+    date: "2026",
+    image: "https://i.ibb.co.com/S40BBCcM/b219a199-0150-432d-a019-e4a369011eb8.jpg",
+  },
 ];
 
 export const skillCategories: SkillCategory[] = [
