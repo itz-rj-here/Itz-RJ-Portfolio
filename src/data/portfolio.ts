@@ -179,7 +179,15 @@ export const certificates: Certificate[] = [
     issuerUrl: "https://www.sololearn.com/",
     date: "2026",
     image: "https://i.ibb.co.com/wZqwrsNs/cert9.jpg",
-  }
+  },
+  {
+    id: "cert-10",
+    title: "Prompt Engineering",
+    issuer: "Sololearn",
+    issuerUrl: "https://www.sololearn.com/",
+    date: "2026",
+    image: "https://i.ibb.co.com/BVG4yv6d/cert10.jpg",
+  },
 ];
 
 export const skillCategories: SkillCategory[] = [
