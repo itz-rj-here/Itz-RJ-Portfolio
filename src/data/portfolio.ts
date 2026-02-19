@@ -164,6 +164,14 @@ export const certificates: Certificate[] = [
     date: "2026",
     image: "https://i.ibb.co.com/YTT7H8G9/cert7.jpg",
   },
+  {
+    id: "cert-8",
+    title: "Vibe Coding",
+    issuer: "Sololearn",
+    issuerUrl: "https://www.sololearn.com/",
+    date: "2026",
+    image: "https://i.ibb.co.com/1Y69xMhk/cert8.jpg",
+  }
 ];
 
 export const skillCategories: SkillCategory[] = [
