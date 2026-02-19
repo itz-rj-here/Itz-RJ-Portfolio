@@ -154,7 +154,15 @@ export const certificates: Certificate[] = [
     issuer: "Sololearn",
     issuerUrl: "https://www.sololearn.com/",
     date: "2026",
-    image: "https://i.ibb.co.com/S40BBCcM/b219a199-0150-432d-a019-e4a369011eb8.jpg",
+    image: "https://i.ibb.co.com/S40BBCcM/cert6.jpg",
+  },
+  {
+    id: "cert-7",
+    title: "Tech for Everyone",
+    issuer: "Sololearn",
+    issuerUrl: "https://www.sololearn.com/",
+    date: "2026",
+    image: "https://i.ibb.co.com/YTT7H8G9/cert7.jpg",
   },
 ];
 
