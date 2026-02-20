@@ -188,6 +188,14 @@ export const certificates: Certificate[] = [
     date: "2026",
     image: "https://i.ibb.co.com/BVG4yv6d/cert10.jpg",
   },
+  {
+    id: "cert-11",
+    title: "Introduction to LLMs",
+    issuer: "Sololearn",
+    issuerUrl: "https://www.sololearn.com/",
+    date: "2026",
+    image: "https://i.ibb.co.com/qLqB4bSk/cert11.jpg",
+  }
 ];
 
 export const skillCategories: SkillCategory[] = [
