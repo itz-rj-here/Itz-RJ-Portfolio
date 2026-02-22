@@ -203,6 +203,14 @@ export const certificates: Certificate[] = [
     issuerUrl: "https://www.sololearn.com/",
     date: "2026",
     image: "https://i.ibb.co.com/5hBdnpKx/cert12.jpg",
+  },
+  {
+    id: "cert-13",
+    title: "Visualize Your Data",
+    issuer: "Sololearn",
+    issuerUrl: "https://www.sololearn.com/",
+    date: "2026",
+    image: "https://i.ibb.co.com/8nZk3hHp/cert13.jpg",
   }
 ];
 
