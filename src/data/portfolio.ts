@@ -211,6 +211,14 @@ export const certificates: Certificate[] = [
     issuerUrl: "https://www.sololearn.com/",
     date: "2026",
     image: "https://i.ibb.co.com/8nZk3hHp/cert13.jpg",
+  },
+  {
+    id: "cert-14",
+    title: "Project Planning with AI",
+    issuer: "Sololearn",
+    issuerUrl: "https://www.sololearn.com/",
+    date: "2026",
+    image: "https://i.ibb.co.com/kvL0bSG/cert14.jpg",
   }
 ];
 
