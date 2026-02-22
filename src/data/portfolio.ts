@@ -227,6 +227,14 @@ export const certificates: Certificate[] = [
     issuerUrl: "https://www.sololearn.com/",
     date: "2026",
     image: "https://i.ibb.co.com/DgKFSWR8/cert15.jpg",
+  },
+  {
+    id: "cert-16",
+    title: "Social Media Marketing with AI",
+    issuer: "Sololearn",
+    issuerUrl: "https://www.sololearn.com/",
+    date: "2026",
+    image: "https://i.ibb.co.com/LdNpbNn2/cert16.jpg",
   }
 ];
 
