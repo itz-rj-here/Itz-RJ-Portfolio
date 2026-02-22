@@ -219,6 +219,14 @@ export const certificates: Certificate[] = [
     issuerUrl: "https://www.sololearn.com/",
     date: "2026",
     image: "https://i.ibb.co.com/kvL0bSG/cert14.jpg",
+  },
+  {
+    id: "cert-15",
+    title: "Think Creatively with AI",
+    issuer: "Sololearn",
+    issuerUrl: "https://www.sololearn.com/",
+    date: "2026",
+    image: "https://i.ibb.co.com/DgKFSWR8/cert15.jpg",
   }
 ];
 
