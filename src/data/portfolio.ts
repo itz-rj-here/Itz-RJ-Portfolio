@@ -235,7 +235,15 @@ export const certificates: Certificate[] = [
     issuerUrl: "https://www.sololearn.com/",
     date: "2026",
     image: "https://i.ibb.co.com/LdNpbNn2/cert16.jpg",
-  }
+  },
+  {
+    id: "cert-17",
+    title: "Brainstorm with AI",
+    issuer: "Sololearn",
+    issuerUrl: "https://www.sololearn.com/",
+    date: "2026",
+    image: "https://i.ibb.co.com/6cLYnLVX/cert17.jpg",
+  },
 ];
 
 export const skillCategories: SkillCategory[] = [
