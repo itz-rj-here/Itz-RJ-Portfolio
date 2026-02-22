@@ -12,6 +12,7 @@ const AboutSection = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
   const [currentImage, setCurrentImage] = useState(0);
+  const [imageErrors, setImageErrors] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -59,16 +60,18 @@ const AboutSection = () => {
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ duration: 0.8, ease: "easeInOut" }}
                   >
-                    <img
-                      src={aboutImages[currentImage].src}
-                      alt={aboutImages[currentImage].alt}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = "none";
-                        (e.target as HTMLImageElement).parentElement!.innerHTML =
-                          '<span class="text-7xl font-display font-bold gradient-text">RJ</span>';
-                      }}
-                    />
+                    {imageErrors.has(currentImage) ? (
+                      <span className="text-7xl font-display font-bold gradient-text">RJ</span>
+                    ) : (
+                      <img
+                        src={aboutImages[currentImage].src}
+                        alt={aboutImages[currentImage].alt}
+                        className="w-full h-full object-cover"
+                        onError={() => {
+                          setImageErrors((prev) => new Set(prev).add(currentImage));
+                        }}
+                      />
+                    )}
                   </motion.div>
                 </AnimatePresence>
               </div>
