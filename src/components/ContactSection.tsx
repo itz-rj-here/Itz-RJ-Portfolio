@@ -13,12 +13,20 @@ import {
   Loader2,
 } from "lucide-react";
 import { socialLinks } from "@/data/portfolio";
+import { z } from "zod";
+
+const contactSchema = z.object({
+  name: z.string().trim().min(1, "Name is required").max(100, "Name must be under 100 characters"),
+  email: z.string().trim().email("Invalid email address").max(255, "Email must be under 255 characters"),
+  message: z.string().trim().min(10, "Message must be at least 10 characters").max(1000, "Message must be under 1000 characters"),
+});
 
 const ContactSection = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
   const iconMap = {
     Github,
@@ -32,17 +40,30 @@ const ContactSection = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setValidationErrors({});
+
+    const result = contactSchema.safeParse(form);
+    if (!result.success) {
+      const errors: Record<string, string> = {};
+      result.error.errors.forEach((err) => {
+        if (err.path[0]) errors[err.path[0] as string] = err.message;
+      });
+      setValidationErrors(errors);
+      return;
+    }
+
     setStatus("loading");
 
     try {
+      const validated = result.data;
       const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           access_key: "aaa42eee-7b7e-47c0-ae6e-45c60d2fde6e", // Replace with your Web3Forms access key
-          name: form.name,
-          email: form.email,
-          message: form.message,
+          name: validated.name,
+          email: validated.email,
+          message: validated.message,
           from_name: "It'z RJ Portfolio",
         }),
       });
@@ -104,11 +125,12 @@ const ContactSection = () => {
                 type="text"
                 placeholder="Your Name"
                 value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg bg-secondary border border-border text-foreground placeholder:text-muted-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-shadow"
+                onChange={(e) => { setForm({ ...form, name: e.target.value }); setValidationErrors((prev) => { const { name, ...rest } = prev; return rest; }); }}
+                className={`w-full px-4 py-3 rounded-lg bg-secondary border ${validationErrors.name ? 'border-destructive' : 'border-border'} text-foreground placeholder:text-muted-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-shadow`}
                 required
                 maxLength={100}
               />
+              {validationErrors.name && <p className="text-destructive text-xs mt-1">{validationErrors.name}</p>}
             </div>
             <div>
               <label className="text-xs text-muted-foreground mb-1.5 block">Email</label>
@@ -116,11 +138,12 @@ const ContactSection = () => {
                 type="email"
                 placeholder="you@example.com"
                 value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg bg-secondary border border-border text-foreground placeholder:text-muted-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-shadow"
+                onChange={(e) => { setForm({ ...form, email: e.target.value }); setValidationErrors((prev) => { const { email, ...rest } = prev; return rest; }); }}
+                className={`w-full px-4 py-3 rounded-lg bg-secondary border ${validationErrors.email ? 'border-destructive' : 'border-border'} text-foreground placeholder:text-muted-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-shadow`}
                 required
                 maxLength={255}
               />
+              {validationErrors.email && <p className="text-destructive text-xs mt-1">{validationErrors.email}</p>}
             </div>
             <div>
               <label className="text-xs text-muted-foreground mb-1.5 block">Message</label>
@@ -128,11 +151,12 @@ const ContactSection = () => {
                 placeholder="Tell me about your project..."
                 rows={4}
                 value={form.message}
-                onChange={(e) => setForm({ ...form, message: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg bg-secondary border border-border text-foreground placeholder:text-muted-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none transition-shadow"
+                onChange={(e) => { setForm({ ...form, message: e.target.value }); setValidationErrors((prev) => { const { message, ...rest } = prev; return rest; }); }}
+                className={`w-full px-4 py-3 rounded-lg bg-secondary border ${validationErrors.message ? 'border-destructive' : 'border-border'} text-foreground placeholder:text-muted-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none transition-shadow`}
                 required
                 maxLength={1000}
               />
+              {validationErrors.message && <p className="text-destructive text-xs mt-1">{validationErrors.message}</p>}
             </div>
             <button
               type="submit"
