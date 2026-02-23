@@ -244,6 +244,22 @@ export const certificates: Certificate[] = [
     date: "2026",
     image: "https://i.ibb.co.com/6cLYnLVX/cert17.jpg",
   },
+  {
+    id: "cert-18",
+    title: "SEO with AI",
+    issuer: "Sololearn",
+    issuerUrl: "https://www.sololearn.com/",
+    date: "2026",
+    image: "https://i.ibb.co.com/8nrNm7zg/cert18.jpg",
+  },
+  {
+    id: "cert-19",
+    title: "Data Literacy with AI",
+    issuer: "Sololearn",
+    issuerUrl: "https://www.sololearn.com/",
+    date: "2026",
+    image: "https://i.ibb.co.com/HLSPQyM0/cert19.jpg",
+  },
 ];
 
 export const skillCategories: SkillCategory[] = [
