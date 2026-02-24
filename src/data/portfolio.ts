@@ -58,8 +58,8 @@ export const projects: Project[] = [
     title: "TATBD's Ultimate Wallpapers",
     description: "TATBD's Ultimate Wallpapers is a project aimed at providing high-quality wallpapers for various devices, curated by the TeenAgeTechBD community. The project offers a collection of stunning, diverse wallpapers that cater to different tastes and preferences. The main author of the project is Saimon Islam Prantik, and I am a collaborator and maintainer, working to expand the wallpaper collection and maintain the project.",
     shortDescription: "High-quality wallpaper collection curated by the TeenAgeTechBD community.",
-    image: "https://i.ibb.co.com/1f9nn9yc/portfolio2.jpg",
-    images: ["https://i.ibb.co.com/1f9nn9yc/portfolio2.jpg"],
+    image: "https://i.ibb.co.com/SpD4N3J/portfolio2.png",
+    images: ["https://i.ibb.co.com/SpD4N3J/portfolio2.png"],
     technologies: ["HTML", "CSS", "JavaScript"],
     features: [
       "Curated wallpaper collections",
