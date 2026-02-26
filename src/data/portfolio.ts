@@ -268,6 +268,14 @@ export const certificates: Certificate[] = [
     date: "2026",
     image: "https://i.ibb.co.com/sJyQkyrv/cert20.jpg",
   },
+  {
+    id: "cert-21",
+    title: "Ethical AI Foundations",
+    issuer: "Sololearn",
+    issuerUrl: "https://www.sololearn.com/",
+    date: "2026",
+    image: "https://i.ibb.co.com/JjRWBPhy/cert21.jpg",
+  },
 ];
 
 export const skillCategories: SkillCategory[] = [
