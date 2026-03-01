@@ -276,6 +276,14 @@ export const certificates: Certificate[] = [
     date: "2026",
     image: "https://i.ibb.co.com/JjRWBPhy/cert21.jpg",
   },
+  {
+    id: "cert-22",
+    title: "Generative AI in Practice",
+    issuer: "Sololearn",
+    issuerUrl: "https://www.sololearn.com/",
+    date: "2026",
+    image: "https://i.ibb.co.com/vCZwqZ4h/cert22.jpg",
+  },
 ];
 
 export const skillCategories: SkillCategory[] = [
