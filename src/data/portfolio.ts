@@ -105,6 +105,27 @@ export const projects: Project[] = [
     liveUrl: "https://masudhasan.vercel.app/",
     githubUrl: "https://github.com/itz-rj-here/masud-hasan-portfolio",
   },
+  {
+    id: "project-5",
+    title: "Saafreem's Portfolio",
+    description: "A modern, fully responsive portfolio website showcasing my journey as a Frontend Developer and Web Enthusiast. With a strong Science and Mechanical Engineering background, I bridge the gap between mechanical systems and web development. Built with React, TypeScript, and Tailwind CSS, this portfolio features smooth animations, dark/light mode support, and displays my projects, certifications, and competitive gaming achievements. The site emphasizes clean UI/UX design and structural logic in code, reflecting my passion for building digital experiences.",
+    shortDescription: "Modern portfolio showcasing Frontend Development skills, projects, and certifications with responsive design and smooth animations.",
+    image: "https://i.ibb.co.com/5hHnTmRq/portfolio5.png",
+    images: ["https://i.ibb.co.com/5hHnTmRq/portfolio5.png"],
+    technologies: ["HTML", "CSS", "JavaScript"],
+    features: [
+      "Responsive design for all devices",
+      "Dark/Light mode theme support",
+      "Smooth animations and transitions",
+      "Projects showcase section",
+      "Certifications gallery",
+      "Social media integration",
+      "Modern UI/UX design",
+      "Fast performance",
+    ],
+    liveUrl: "https://saafreem.vercel.app/",
+    githubUrl: "https://github.com/itz-rj-here/Saafreem",
+  }
 ];
 
 export const certificates: Certificate[] = [
@@ -284,6 +305,22 @@ export const certificates: Certificate[] = [
     date: "2026",
     image: "https://i.ibb.co.com/vCZwqZ4h/cert22.jpg",
   },
+  {
+    id: "cert-23",
+    title: "AI-Powered A/B Testing",
+    issuer: "Sololearn",
+    issuerUrl: "https://www.sololearn.com/",
+    date: "2026",
+    image: "https://i.ibb.co.com/6RpDWJ8L/cert23.png",
+  },
+  {
+    id: "cert-24",
+    title: "AI-Powered Product & UX",
+    issuer: "Sololearn",
+    issuerUrl: "https://www.sololearn.com/",
+    date: "2026",
+    image: "https://i.ibb.co.com/LXcnG9jr/cert24.png",
+  }
 ];
 
 export const skillCategories: SkillCategory[] = [
