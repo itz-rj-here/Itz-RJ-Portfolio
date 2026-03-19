@@ -320,6 +320,22 @@ export const certificates: Certificate[] = [
     issuerUrl: "https://www.sololearn.com/",
     date: "2026",
     image: "https://i.ibb.co.com/LXcnG9jr/cert24.png",
+  },
+  {
+    id: "cert-25",
+    title: "Participation in Art & Sketch",
+    issuer: "Dreams On The Way",
+    issuerUrl: "https://www.facebook.com/DOTWay.official/",
+    date: "2026",
+    image: "https://i.ibb.co.com/FLVBbfXJ/cert25.png",
+  },
+  {
+    id: "cert-26",
+    title: "Participation in Photography",
+    issuer: "Dreams On The Way",
+    issuerUrl: "https://www.facebook.com/DOTWay.official/",
+    date: "2026",
+    image: "https://i.ibb.co.com/RkDZyCvY/cert26.png",
   }
 ];
 
