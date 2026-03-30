@@ -336,6 +336,14 @@ export const certificates: Certificate[] = [
     issuerUrl: "https://www.facebook.com/DOTWay.official/",
     date: "2026",
     image: "https://i.ibb.co.com/RkDZyCvY/cert26.png",
+  },
+  {
+    id: "cert-27",
+    title: "Data Analytics with AI",
+    issuer: "Sololearn",
+    issuerUrl: "https://www.sololearn.com/",
+    date: "2026",
+    image: "https://i.ibb.co.com/xthVSTb5/cert27.jpg",
   }
 ];
 
