@@ -48,7 +48,7 @@ const HeroSection = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          It'z RJ — Student Developer Portfolio
+          It'z RJ
         </motion.h1>
 
         <motion.p
