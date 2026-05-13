@@ -81,6 +81,8 @@ const AboutSection = () => {
                   <button
                     key={i}
                     onClick={() => setCurrentImage(i)}
+                    aria-label={`Show profile image ${i + 1} of ${aboutImages.length}`}
+                    aria-current={i === currentImage}
                     className={`w-2 h-2 rounded-full transition-all duration-300 ${
                       i === currentImage
                         ? "bg-primary w-6"
