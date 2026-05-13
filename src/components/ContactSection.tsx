@@ -81,7 +81,7 @@ const ContactSection = () => {
       const data = await res.json();
       if (data.success) {
         setStatus("success");
-        setForm({ name: "", email: "", message: "" });
+        setForm({ name: "", email: "", message: "", honeypot: "" });
         setTimeout(() => setStatus("idle"), 4000);
       } else {
         setStatus("error");
