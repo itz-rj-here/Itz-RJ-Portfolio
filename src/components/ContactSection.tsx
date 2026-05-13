@@ -181,6 +181,8 @@ const ContactSection = () => {
               tabIndex={-1}
               autoComplete="off"
               aria-hidden="true"
+              value={form.honeypot}
+              onChange={(e) => setForm({ ...form, honeypot: e.target.value })}
               style={{ position: "absolute", opacity: 0, pointerEvents: "none", height: 0, width: 0 }}
             />
             <button
