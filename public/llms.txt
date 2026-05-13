@@ -1,0 +1,15 @@
+# It'z RJ's Portfolio
+
+> Personal portfolio of Md. Faiad Mahmud Adil (It'z RJ) — student developer from Dhaka, Bangladesh, focused on frontend and full-stack web development.
+
+## Pages
+
+- [Home](/): About, skills, portfolio, certificates and contact for It'z RJ.
+
+## Projects
+
+- [MYNT: Material You New Tab](/project/project-1): Browser extension new tab inspired by Material You.
+- [TATBD's Ultimate Wallpapers](/project/project-2): Curated high-quality wallpaper collection.
+- [Elevate Clothing](/project/project-3): Fashion e-commerce platform.
+- [Masud Hasan — Portfolio](/project/project-4): Responsive portfolio site built with React and Tailwind.
+- [Saafreem's Portfolio](/project/project-5): Frontend developer portfolio with dark/light mode.
