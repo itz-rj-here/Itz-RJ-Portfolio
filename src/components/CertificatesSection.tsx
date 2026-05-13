@@ -69,7 +69,11 @@ const CertificatesSection = () => {
             animate={{ scale: 1, opacity: 1 }}
             onClick={(e) => e.stopPropagation()}
           >
-            <button onClick={() => setSelected(null)} className="absolute top-4 right-4 z-10 text-muted-foreground hover:text-foreground bg-background/60 rounded-full p-1.5">
+            <button
+              onClick={() => setSelected(null)}
+              aria-label="Close certificate preview"
+              className="absolute top-4 right-4 z-10 text-muted-foreground hover:text-foreground bg-background/60 rounded-full p-1.5"
+            >
               <X className="w-5 h-5" />
             </button>
             {(() => {
