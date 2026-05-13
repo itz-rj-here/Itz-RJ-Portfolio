@@ -64,6 +64,13 @@ const ContactSection = () => {
 
     try {
       const validated = result.data;
+
+      if (form.honeypot !== "") {
+        setStatus("error");
+        setTimeout(() => setStatus("idle"), 4000);
+        return;
+      }
+
       const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -74,7 +81,7 @@ const ContactSection = () => {
           message: validated.message,
           from_name: "It'z RJ Portfolio",
           subject: `New message from ${validated.name}`,
-          _honeypot: "",
+          _honeypot: form.honeypot,
         }),
       });
 
