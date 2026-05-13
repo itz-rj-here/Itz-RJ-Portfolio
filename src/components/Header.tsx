@@ -61,7 +61,12 @@ const Header = () => {
           </nav>
 
           {/* Mobile toggle */}
-          <button className="md:hidden text-foreground" onClick={() => setMobileOpen(!mobileOpen)}>
+          <button
+            className="md:hidden text-foreground"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label={mobileOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-expanded={mobileOpen}
+          >
             {mobileOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
