@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ExternalLink, Github, ChevronLeft, ChevronRight } from "lucide-react";
 import { projects } from "@/data/portfolio";
 import { useState, useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 
 const ProjectDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -32,8 +33,32 @@ const ProjectDetail = () => {
   const prevImg = () => setCurrentImg((p) => (p - 1 + images.length) % images.length);
   const nextImg = () => setCurrentImg((p) => (p + 1) % images.length);
 
+  const metaDescription = project.shortDescription.slice(0, 160);
+  const canonicalPath = `/project/${project.id}`;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    name: project.title,
+    description: project.shortDescription,
+    image: project.image,
+    url: canonicalPath,
+    keywords: project.technologies.join(", "),
+    author: { "@type": "Person", name: "Md. Faiad Mahmud Adil", alternateName: "It'z RJ" },
+  };
+
   return (
     <div className="min-h-screen gradient-bg">
+      <Helmet>
+        <title>{`${project.title} | It'z RJ's Portfolio`}</title>
+        <meta name="description" content={metaDescription} />
+        <link rel="canonical" href={canonicalPath} />
+        <meta property="og:title" content={`${project.title} | It'z RJ's Portfolio`} />
+        <meta property="og:description" content={metaDescription} />
+        <meta property="og:url" content={canonicalPath} />
+        <meta property="og:type" content="article" />
+        <meta property="og:image" content={project.image} />
+        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+      </Helmet>
       <div className="container mx-auto px-4 md:px-8 py-8">
         {/* Back nav */}
         <motion.button
@@ -79,12 +104,14 @@ const ProjectDetail = () => {
               <>
                 <button
                   onClick={prevImg}
+                  aria-label="Previous image"
                   className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-background/70 backdrop-blur-sm flex items-center justify-center text-foreground opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background"
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
                 <button
                   onClick={nextImg}
+                  aria-label="Next image"
                   className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-background/70 backdrop-blur-sm flex items-center justify-center text-foreground opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background"
                 >
                   <ChevronRight className="w-5 h-5" />
@@ -94,6 +121,8 @@ const ProjectDetail = () => {
                     <button
                       key={i}
                       onClick={() => setCurrentImg(i)}
+                      aria-label={`Show image ${i + 1} of ${images.length}`}
+                      aria-current={i === currentImg}
                       className={`w-2 h-2 rounded-full transition-all duration-300 ${
                         i === currentImg ? "bg-primary w-5" : "bg-foreground/30"
                       }`}
@@ -229,12 +258,14 @@ const ProjectDetail = () => {
               <>
                 <button
                   onClick={(e) => { e.stopPropagation(); prevImg(); }}
+                  aria-label="Previous image"
                   className="absolute left-6 w-10 h-10 rounded-full bg-background/70 backdrop-blur-sm flex items-center justify-center text-foreground hover:bg-background"
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
                 <button
                   onClick={(e) => { e.stopPropagation(); nextImg(); }}
+                  aria-label="Next image"
                   className="absolute right-6 w-10 h-10 rounded-full bg-background/70 backdrop-blur-sm flex items-center justify-center text-foreground hover:bg-background"
                 >
                   <ChevronRight className="w-5 h-5" />
