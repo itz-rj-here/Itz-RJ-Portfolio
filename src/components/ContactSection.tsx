@@ -26,7 +26,7 @@ const contactSchema = z.object({
 const ContactSection = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [form, setForm] = useState({ name: "", email: "", message: "", honeypot: "" });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error" | "config_error">("idle");
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
@@ -64,6 +64,13 @@ const ContactSection = () => {
 
     try {
       const validated = result.data;
+
+      if (form.honeypot !== "") {
+        setStatus("error");
+        setTimeout(() => setStatus("idle"), 4000);
+        return;
+      }
+
       const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -74,14 +81,14 @@ const ContactSection = () => {
           message: validated.message,
           from_name: "It'z RJ Portfolio",
           subject: `New message from ${validated.name}`,
-          _honeypot: "",
+          _honeypot: form.honeypot,
         }),
       });
 
       const data = await res.json();
       if (data.success) {
         setStatus("success");
-        setForm({ name: "", email: "", message: "" });
+        setForm({ name: "", email: "", message: "", honeypot: "" });
         setTimeout(() => setStatus("idle"), 4000);
       } else {
         setStatus("error");
@@ -181,6 +188,8 @@ const ContactSection = () => {
               tabIndex={-1}
               autoComplete="off"
               aria-hidden="true"
+              value={form.honeypot}
+              onChange={(e) => setForm({ ...form, honeypot: e.target.value })}
               style={{ position: "absolute", opacity: 0, pointerEvents: "none", height: 0, width: 0 }}
             />
             <button
