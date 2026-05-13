@@ -44,6 +44,12 @@ const ContactSection = () => {
     e.preventDefault();
     setValidationErrors({});
 
+    if (!WEB3FORMS_KEY) {
+      setStatus("config_error");
+      setTimeout(() => setStatus("idle"), 4000);
+      return;
+    }
+
     const result = contactSchema.safeParse(form);
     if (!result.success) {
       const errors: Record<string, string> = {};
@@ -62,11 +68,13 @@ const ContactSection = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          access_key: "aaa42eee-7b7e-47c0-ae6e-45c60d2fde6e", // Replace with your Web3Forms access key
+          access_key: WEB3FORMS_KEY,
           name: validated.name,
           email: validated.email,
           message: validated.message,
           from_name: "It'z RJ Portfolio",
+          subject: `New message from ${validated.name}`,
+          _honeypot: "",
         }),
       });
 
@@ -166,6 +174,15 @@ const ContactSection = () => {
               />
               {validationErrors.message && <p className="text-destructive text-xs mt-1">{validationErrors.message}</p>}
             </div>
+            {/* Honeypot field — hidden from real users, traps bots */}
+            <input
+              type="text"
+              name="_honeypot"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              style={{ position: "absolute", opacity: 0, pointerEvents: "none", height: 0, width: 0 }}
+            />
             <button
               type="submit"
               disabled={status === "loading"}
@@ -177,6 +194,8 @@ const ContactSection = () => {
                 <><CheckCircle className="w-4 h-4" /> Sent Successfully!</>
               ) : status === "error" ? (
                 <><AlertCircle className="w-4 h-4" /> Failed — Try Again</>
+              ) : status === "config_error" ? (
+                <><AlertCircle className="w-4 h-4" /> Not Configured</>
               ) : (
                 <>Send Message <Send className="w-4 h-4" /></>
               )}
