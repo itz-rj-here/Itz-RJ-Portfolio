@@ -120,8 +120,10 @@ const ContactSection = () => {
             transition={{ delay: 0.2 }}
           >
             <div>
-              <label className="text-xs text-muted-foreground mb-1.5 block">Name</label>
+              <label htmlFor="contact-name" className="text-xs text-muted-foreground mb-1.5 block">Name</label>
               <input
+                id="contact-name"
+                name="name"
                 type="text"
                 placeholder="Your Name"
                 value={form.name}
@@ -133,8 +135,10 @@ const ContactSection = () => {
               {validationErrors.name && <p className="text-destructive text-xs mt-1">{validationErrors.name}</p>}
             </div>
             <div>
-              <label className="text-xs text-muted-foreground mb-1.5 block">Email</label>
+              <label htmlFor="contact-email" className="text-xs text-muted-foreground mb-1.5 block">Email</label>
               <input
+                id="contact-email"
+                name="email"
                 type="email"
                 placeholder="you@example.com"
                 value={form.email}
@@ -146,8 +150,10 @@ const ContactSection = () => {
               {validationErrors.email && <p className="text-destructive text-xs mt-1">{validationErrors.email}</p>}
             </div>
             <div>
-              <label className="text-xs text-muted-foreground mb-1.5 block">Message</label>
+              <label htmlFor="contact-message" className="text-xs text-muted-foreground mb-1.5 block">Message</label>
               <textarea
+                id="contact-message"
+                name="message"
                 placeholder="Tell me about your project..."
                 rows={4}
                 value={form.message}
@@ -216,6 +222,7 @@ const ContactSection = () => {
                         href={link.url}
                         target="_blank"
                         rel="noopener noreferrer"
+                        aria-label={`Visit It'z RJ on ${link.name}`}
                         className="w-9 h-9 rounded-lg bg-secondary border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/30 transition-all"
                       >
                         <Icon className="w-4 h-4" />
