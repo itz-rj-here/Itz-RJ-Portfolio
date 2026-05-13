@@ -15,6 +15,8 @@ import {
 import { socialLinks } from "@/data/portfolio";
 import { z } from "zod";
 
+const WEB3FORMS_KEY = import.meta.env.VITE_WEB3FORMS_KEY;
+
 const contactSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(100, "Name must be under 100 characters"),
   email: z.string().trim().email("Invalid email address").max(255, "Email must be under 255 characters"),
@@ -25,7 +27,7 @@ const ContactSection = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
   const [form, setForm] = useState({ name: "", email: "", message: "" });
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error" | "config_error">("idle");
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
   const iconMap = {
