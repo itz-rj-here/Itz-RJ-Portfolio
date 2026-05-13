@@ -73,9 +73,9 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
             animate={phase === "text" ? { opacity: 1, scale: 1 } : {}}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <h1 className="text-6xl md:text-8xl font-display font-bold glow-text text-foreground tracking-tight">
+            <p className="text-6xl md:text-8xl font-display font-bold glow-text text-foreground tracking-tight" role="presentation">
               It'z RJ
-            </h1>
+            </p>
             <motion.p
               className="mt-4 text-muted-foreground text-lg tracking-widest uppercase"
               initial={{ opacity: 0, y: 10 }}
