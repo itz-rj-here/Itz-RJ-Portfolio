@@ -26,7 +26,7 @@ const contactSchema = z.object({
 const ContactSection = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [form, setForm] = useState({ name: "", email: "", message: "", honeypot: "" });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error" | "config_error">("idle");
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
