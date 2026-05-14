@@ -2,16 +2,13 @@ import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 import {
   Send,
-  Github,
-  Linkedin,
-  Instagram,
-  Facebook,
   Mail,
   MapPin,
-  CheckCircle,
-  AlertCircle,
-  Loader2,
+  CircleCheck,
+  CircleAlert,
+  LoaderCircle,
 } from "lucide-react";
+import { GithubIcon, LinkedinIcon, InstagramIcon, FacebookIcon } from "@/components/SocialIcons";
 import { socialLinks } from "@/data/portfolio";
 import { z } from "zod";
 
@@ -31,10 +28,10 @@ const ContactSection = () => {
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
   const iconMap = {
-    Github,
-    Linkedin,
-    Instagram,
-    Facebook,
+    Github: GithubIcon,
+    Linkedin: LinkedinIcon,
+    Instagram: InstagramIcon,
+    Facebook: FacebookIcon,
     Mail,
   } as const;
 
@@ -198,13 +195,13 @@ const ContactSection = () => {
               className="w-full py-3 rounded-lg bg-primary text-primary-foreground font-medium flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors disabled:opacity-60"
             >
               {status === "loading" ? (
-                <><Loader2 className="w-4 h-4 animate-spin" /> Sending...</>
+                <><LoaderCircle className="w-4 h-4 animate-spin" /> Sending...</>
               ) : status === "success" ? (
-                <><CheckCircle className="w-4 h-4" /> Sent Successfully!</>
+                <><CircleCheck className="w-4 h-4" /> Sent Successfully!</>
               ) : status === "error" ? (
-                <><AlertCircle className="w-4 h-4" /> Failed — Try Again</>
+                <><CircleAlert className="w-4 h-4" /> Failed — Try Again</>
               ) : status === "config_error" ? (
-                <><AlertCircle className="w-4 h-4" /> Not Configured</>
+                <><CircleAlert className="w-4 h-4" /> Not Configured</>
               ) : (
                 <>Send Message <Send className="w-4 h-4" /></>
               )}

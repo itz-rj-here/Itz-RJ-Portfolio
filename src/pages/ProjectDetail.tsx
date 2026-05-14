@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ExternalLink, Github, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
+import { GithubIcon } from "@/components/SocialIcons";
 import { projects } from "@/data/portfolio";
 import { useState, useEffect, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
@@ -210,7 +211,7 @@ const ProjectDetail = () => {
                 rel="noopener noreferrer"
                 className="px-6 py-3 rounded-lg border border-border text-foreground flex items-center gap-2 hover:bg-secondary hover:border-primary/30 transition-all"
               >
-                GitHub <Github className="w-4 h-4" />
+                GitHub <GithubIcon className="w-4 h-4" />
               </a>
             )}
           </div>
