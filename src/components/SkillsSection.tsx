@@ -35,7 +35,9 @@ const SkillsSection = () => {
               transition={{ delay: 0.2 + catIdx * 0.15 }}
             >
               <h3 className="text-lg font-display font-semibold text-foreground mb-6">{category.name}</h3>
-              <div className="flex flex-wrap gap-2.5">
+
+              {/* Skill pills */}
+              <div className="flex flex-wrap gap-2.5 mb-6">
                 {category.skills.map((skill, skillIdx) => (
                   <motion.span
                     key={skill.name}
@@ -53,6 +55,37 @@ const SkillsSection = () => {
                   >
                     {skill.name}
                   </motion.span>
+                ))}
+              </div>
+
+              {/* Animated progress bars */}
+              <div className="space-y-3">
+                {category.skills.map((skill, skillIdx) => (
+                  <div key={`${skill.name}-bar`}>
+                    <div className="flex justify-between text-xs mb-1">
+                      <span className="text-muted-foreground">{skill.name}</span>
+                      <motion.span
+                        className="text-primary font-medium"
+                        initial={{ opacity: 0 }}
+                        animate={inView ? { opacity: 1 } : {}}
+                        transition={{ delay: 0.6 + catIdx * 0.1 + skillIdx * 0.08 }}
+                      >
+                        {skill.level}%
+                      </motion.span>
+                    </div>
+                    <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
+                      <motion.div
+                        className="h-full rounded-full bg-gradient-to-r from-primary to-accent"
+                        initial={{ width: 0 }}
+                        animate={inView ? { width: `${skill.level}%` } : {}}
+                        transition={{
+                          duration: 1.2,
+                          delay: 0.5 + catIdx * 0.15 + skillIdx * 0.08,
+                          ease: "easeOut",
+                        }}
+                      />
+                    </div>
+                  </div>
                 ))}
               </div>
             </motion.div>

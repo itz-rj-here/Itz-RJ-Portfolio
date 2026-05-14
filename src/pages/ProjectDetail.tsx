@@ -2,7 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ExternalLink, Github, ChevronLeft, ChevronRight } from "lucide-react";
 import { projects } from "@/data/portfolio";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
 
 const ProjectDetail = () => {
@@ -16,9 +16,31 @@ const ProjectDetail = () => {
   const [currentImg, setCurrentImg] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
+  const images = project?.images?.length ? project.images : project ? [project.image] : [];
+  const prevImg = useCallback(() => setCurrentImg((p) => (p - 1 + images.length) % images.length), [images.length]);
+  const nextImg = useCallback(() => setCurrentImg((p) => (p + 1) % images.length), [images.length]);
+
+  // Keyboard navigation for lightbox
+  useEffect(() => {
+    if (!lightboxOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setLightboxOpen(false);
+      else if (e.key === "ArrowLeft") prevImg();
+      else if (e.key === "ArrowRight") nextImg();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [lightboxOpen, prevImg, nextImg]);
+
+  // Lock body scroll when lightbox is open
+  useEffect(() => {
+    document.body.style.overflow = lightboxOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [lightboxOpen]);
+
   if (!project) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center gradient-bg">
         <div className="text-center">
           <h1 className="text-2xl font-display font-bold mb-4">Project not found</h1>
           <button onClick={() => navigate("/")} className="text-primary hover:underline">
@@ -28,10 +50,6 @@ const ProjectDetail = () => {
       </div>
     );
   }
-
-  const images = project.images?.length ? project.images : [project.image];
-  const prevImg = () => setCurrentImg((p) => (p - 1 + images.length) % images.length);
-  const nextImg = () => setCurrentImg((p) => (p + 1) % images.length);
 
   const metaDescription = project.shortDescription.slice(0, 160);
   const canonicalPath = `/project/${project.id}`;
@@ -63,11 +81,11 @@ const ProjectDetail = () => {
         {/* Back nav */}
         <motion.button
           onClick={() => navigate("/")}
-          className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-12"
+          className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-12 group"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
         >
-          <ArrowLeft className="w-4 h-4" /> Back to Home
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to Home
         </motion.button>
 
         <motion.div
@@ -155,14 +173,22 @@ const ProjectDetail = () => {
 
           {/* Stats */}
           <div className="flex gap-8 mb-10">
-            <div className="glass-card px-6 py-4 rounded-xl text-center">
+            <motion.div
+              className="glass-card px-6 py-4 rounded-xl text-center"
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
               <p className="text-2xl font-display font-bold text-primary">{project.technologies.length}</p>
               <p className="text-muted-foreground text-xs mt-1">Technologies</p>
-            </div>
-            <div className="glass-card px-6 py-4 rounded-xl text-center">
+            </motion.div>
+            <motion.div
+              className="glass-card px-6 py-4 rounded-xl text-center"
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
               <p className="text-2xl font-display font-bold text-primary">{project.features.length}</p>
               <p className="text-muted-foreground text-xs mt-1">Key Features</p>
-            </div>
+            </motion.div>
           </div>
 
           {/* Buttons */}
@@ -172,7 +198,7 @@ const ProjectDetail = () => {
                 href={project.liveUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium flex items-center gap-2 hover:bg-primary/90 transition-colors"
+                className="px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium flex items-center gap-2 hover:bg-primary/90 transition-all hover:shadow-lg hover:shadow-primary/20"
               >
                 Live Demo <ExternalLink className="w-4 h-4" />
               </a>
@@ -182,7 +208,7 @@ const ProjectDetail = () => {
                 href={project.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-6 py-3 rounded-lg border border-border text-foreground flex items-center gap-2 hover:bg-secondary transition-colors"
+                className="px-6 py-3 rounded-lg border border-border text-foreground flex items-center gap-2 hover:bg-secondary hover:border-primary/30 transition-all"
               >
                 GitHub <Github className="w-4 h-4" />
               </a>
@@ -225,10 +251,15 @@ const ProjectDetail = () => {
             <h2 className="text-xl font-display font-semibold text-foreground mb-4">Key Features</h2>
             <div className="grid sm:grid-cols-2 gap-3">
               {project.features.map((feature, i) => (
-                <div key={i} className="glass-card p-4 rounded-xl flex items-start gap-3">
+                <motion.div
+                  key={i}
+                  className="glass-card p-4 rounded-xl flex items-start gap-3"
+                  whileHover={{ scale: 1.02, borderColor: "hsl(211 78% 51% / 0.3)" }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
                   <div className="w-2 h-2 rounded-full bg-primary mt-1.5 shrink-0" />
                   <p className="text-muted-foreground text-sm">{feature}</p>
-                </div>
+                </motion.div>
               ))}
             </div>
           </motion.div>
@@ -259,14 +290,14 @@ const ProjectDetail = () => {
                 <button
                   onClick={(e) => { e.stopPropagation(); prevImg(); }}
                   aria-label="Previous image"
-                  className="absolute left-6 w-10 h-10 rounded-full bg-background/70 backdrop-blur-sm flex items-center justify-center text-foreground hover:bg-background"
+                  className="absolute left-6 w-10 h-10 rounded-full bg-background/70 backdrop-blur-sm flex items-center justify-center text-foreground hover:bg-background transition-colors"
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
                 <button
                   onClick={(e) => { e.stopPropagation(); nextImg(); }}
                   aria-label="Next image"
-                  className="absolute right-6 w-10 h-10 rounded-full bg-background/70 backdrop-blur-sm flex items-center justify-center text-foreground hover:bg-background"
+                  className="absolute right-6 w-10 h-10 rounded-full bg-background/70 backdrop-blur-sm flex items-center justify-center text-foreground hover:bg-background transition-colors"
                 >
                   <ChevronRight className="w-5 h-5" />
                 </button>

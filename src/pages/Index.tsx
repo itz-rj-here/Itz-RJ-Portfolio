@@ -9,6 +9,8 @@ import CertificatesSection from "@/components/CertificatesSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import IntroScreen from "@/components/IntroScreen";
+import ScrollToTop from "@/components/ScrollToTop";
+import SectionDivider from "@/components/SectionDivider";
 
 const Index = () => {
   const [showIntro, setShowIntro] = useState(false);
@@ -59,13 +61,19 @@ const Index = () => {
           <Header />
           <main>
             <HeroSection />
+            <SectionDivider />
             <AboutSection />
+            <SectionDivider />
             <SkillsSection />
+            <SectionDivider />
             <PortfolioSection />
+            <SectionDivider />
             <CertificatesSection />
+            <SectionDivider />
             <ContactSection />
           </main>
           <Footer />
+          <ScrollToTop />
         </div>
       )}
     </>

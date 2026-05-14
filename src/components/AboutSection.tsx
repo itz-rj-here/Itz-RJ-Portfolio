@@ -1,5 +1,8 @@
 import { motion, useInView, AnimatePresence } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
+import { projects, certificates, skillCategories } from "@/data/portfolio";
+
+const totalSkills = skillCategories.reduce((sum, cat) => sum + cat.skills.length, 0);
 
 const aboutImages = [
   { src: "https://i.ibb.co.com/gMdpT7xc/pfp.png", alt: "Default profile image" },
@@ -13,6 +16,8 @@ const AboutSection = () => {
   const inView = useInView(ref, { once: true, margin: "-100px" });
   const [currentImage, setCurrentImage] = useState(0);
   const [imageErrors, setImageErrors] = useState<Set<number>>(new Set());
+
+  const goToImage = useCallback((idx: number) => setCurrentImage(idx), []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -67,6 +72,7 @@ const AboutSection = () => {
                         src={aboutImages[currentImage].src}
                         alt={aboutImages[currentImage].alt}
                         className="w-full h-full object-cover"
+                        loading="lazy"
                         onError={() => {
                           setImageErrors((prev) => new Set(prev).add(currentImage));
                         }}
@@ -80,7 +86,7 @@ const AboutSection = () => {
                 {aboutImages.map((_, i) => (
                   <button
                     key={i}
-                    onClick={() => setCurrentImage(i)}
+                    onClick={() => goToImage(i)}
                     aria-label={`Show profile image ${i + 1} of ${aboutImages.length}`}
                     aria-current={i === currentImage}
                     className={`w-2 h-2 rounded-full transition-all duration-300 ${
@@ -116,6 +122,22 @@ const AboutSection = () => {
               <p>
                 When I'm not coding, you'll find me exploring new technologies, contributing to open-source projects, and constantly pushing my boundaries as a developer.
               </p>
+            </div>
+
+            {/* Quick stats */}
+            <div className="grid grid-cols-3 gap-3 mt-6 pt-6 border-t border-border/50">
+              <div className="text-center">
+                <p className="text-lg font-display font-bold text-primary">{projects.length}+</p>
+                <p className="text-[10px] text-muted-foreground mt-0.5">Projects</p>
+              </div>
+              <div className="text-center">
+                <p className="text-lg font-display font-bold text-primary">{certificates.length}</p>
+                <p className="text-[10px] text-muted-foreground mt-0.5">Certificates</p>
+              </div>
+              <div className="text-center">
+                <p className="text-lg font-display font-bold text-primary">{totalSkills}+</p>
+                <p className="text-[10px] text-muted-foreground mt-0.5">Skills</p>
+              </div>
             </div>
           </motion.div>
         </div>

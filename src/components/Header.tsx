@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import { useActiveSection } from "@/hooks/use-active-section";
 
 const navItems = [
   { label: "Home", href: "#home" },
@@ -13,12 +14,19 @@ const navItems = [
 const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const activeSection = useActiveSection();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", onScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [mobileOpen]);
 
   const scrollTo = (href: string) => {
     setMobileOpen(false);
@@ -43,18 +51,37 @@ const Header = () => {
 
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-7">
-            {navItems.map((item) => (
-              <button
-                key={item.label}
-                onClick={() => scrollTo(item.href)}
-                className="nav-underline text-sm text-muted-foreground hover:text-foreground transition-colors py-1"
-              >
-                {item.label}
-              </button>
-            ))}
+            {navItems.map((item) => {
+              const sectionId = item.href.replace("#", "");
+              const isActive = activeSection === sectionId;
+              return (
+                <button
+                  key={item.label}
+                  onClick={() => scrollTo(item.href)}
+                  className={`nav-underline text-sm transition-colors py-1 ${
+                    isActive
+                      ? "text-primary font-medium"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {item.label}
+                  {isActive && (
+                    <motion.div
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full"
+                      layoutId="nav-indicator"
+                      transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                    />
+                  )}
+                </button>
+              );
+            })}
             <button
               onClick={() => scrollTo("#contact")}
-              className="ml-2 px-5 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
+              className={`ml-2 px-5 py-2 rounded-lg text-sm font-medium transition-all ${
+                activeSection === "contact"
+                  ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                  : "bg-primary text-primary-foreground hover:bg-primary/90"
+              }`}
             >
               Contact Me
             </button>
@@ -83,18 +110,24 @@ const Header = () => {
             exit={{ opacity: 0, x: "100%" }}
             transition={{ duration: 0.3 }}
           >
-            {navItems.map((item, i) => (
-              <motion.button
-                key={item.label}
-                onClick={() => scrollTo(item.href)}
-                className="text-2xl font-display text-foreground hover:text-primary transition-colors"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.08 }}
-              >
-                {item.label}
-              </motion.button>
-            ))}
+            {navItems.map((item, i) => {
+              const sectionId = item.href.replace("#", "");
+              const isActive = activeSection === sectionId;
+              return (
+                <motion.button
+                  key={item.label}
+                  onClick={() => scrollTo(item.href)}
+                  className={`text-2xl font-display transition-colors ${
+                    isActive ? "text-primary" : "text-foreground hover:text-primary"
+                  }`}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.08 }}
+                >
+                  {item.label}
+                </motion.button>
+              );
+            })}
             <motion.button
               onClick={() => scrollTo("#contact")}
               className="mt-4 px-8 py-3 rounded-lg bg-primary text-primary-foreground font-medium text-lg"

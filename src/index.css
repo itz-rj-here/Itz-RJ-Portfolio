@@ -67,6 +67,16 @@
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Space Grotesk', sans-serif;
   }
+
+  /* Focus styles for accessibility */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary;
+  }
+
+  /* Smooth scroll for the whole page */
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 @layer utilities {
@@ -105,6 +115,45 @@
   .nav-underline:hover::after {
     @apply origin-bottom-left scale-x-100;
   }
+
+  /* Section divider gradient line */
+  .section-divider {
+    @apply w-full h-px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsl(var(--primary) / 0.3) 20%,
+      hsl(var(--accent) / 0.4) 50%,
+      hsl(var(--primary) / 0.3) 80%,
+      transparent
+    );
+  }
+
+  /* Animated mesh gradient background */
+  .mesh-gradient {
+    background:
+      radial-gradient(ellipse at 20% 50%, hsl(211 78% 51% / 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, hsl(199 92% 85% / 0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 80%, hsl(211 78% 51% / 0.04) 0%, transparent 50%);
+  }
+
+  /* Shimmer loading effect for skill progress bars */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      hsl(var(--primary) / 0.15) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+}
+
+/* Shimmer animation */
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 /* Scrollbar styling */
@@ -120,4 +169,16 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--primary) / 0.5);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--muted)) hsl(var(--background));
+}
+
+/* Selection styling */
+::selection {
+  background: hsl(var(--primary) / 0.3);
+  color: hsl(var(--foreground));
 }

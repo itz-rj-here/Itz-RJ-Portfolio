@@ -37,6 +37,7 @@ const PortfolioSection = () => {
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.2 + i * 0.1 }}
               whileHover={{ scale: 1.02, y: -4 }}
+              whileTap={{ scale: 0.98 }}
               onClick={() => navigate(`/project/${project.id}`)}
             >
               {/* Thumbnail */}
@@ -49,12 +50,30 @@ const PortfolioSection = () => {
                     src={project.image}
                     alt={project.title}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    loading="lazy"
                     onError={(e) => {
                       (e.currentTarget as HTMLImageElement).style.display = "none";
                     }}
                   />
                 )}
-                <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                {/* Tech badges overlay */}
+                <div className="absolute bottom-2 left-2 flex gap-1.5 flex-wrap opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  {project.technologies.slice(0, 3).map((tech) => (
+                    <span
+                      key={tech}
+                      className="px-2 py-0.5 rounded-md bg-background/70 backdrop-blur-sm text-[10px] text-foreground font-medium"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                  {project.technologies.length > 3 && (
+                    <span className="px-2 py-0.5 rounded-md bg-background/70 backdrop-blur-sm text-[10px] text-muted-foreground">
+                      +{project.technologies.length - 3}
+                    </span>
+                  )}
+                </div>
               </div>
 
               <div className="p-6">
@@ -62,7 +81,7 @@ const PortfolioSection = () => {
                   {project.title}
                 </h3>
                 <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{project.shortDescription}</p>
-                <div className="flex items-center text-primary text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex items-center text-primary text-sm font-medium opacity-0 group-hover:opacity-100 transition-all transform group-hover:translate-x-1">
                   View Details <ArrowRight className="ml-1 w-4 h-4" />
                 </div>
               </div>

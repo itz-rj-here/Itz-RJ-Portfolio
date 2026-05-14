@@ -107,7 +107,7 @@ export const projects: Project[] = [
   },
   {
     id: "project-5",
-    title: "Saafreem's Portfolio",
+    title: "Saafreem — Portfolio",
     description: "A modern, fully responsive portfolio website showcasing my journey as a Frontend Developer and Web Enthusiast. With a strong Science and Mechanical Engineering background, I bridge the gap between mechanical systems and web development. Built with React, TypeScript, and Tailwind CSS, this portfolio features smooth animations, dark/light mode support, and displays my projects, certifications, and competitive gaming achievements. The site emphasizes clean UI/UX design and structural logic in code, reflecting my passion for building digital experiences.",
     shortDescription: "Modern portfolio showcasing Frontend Development skills, projects, and certifications with responsive design and smooth animations.",
     image: "https://i.ibb.co.com/5hHnTmRq/portfolio5.png",
