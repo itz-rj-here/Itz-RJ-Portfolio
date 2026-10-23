@@ -8,8 +8,8 @@ import {
   CircleAlert,
   LoaderCircle,
 } from "lucide-react";
-import { GithubIcon, LinkedinIcon, InstagramIcon, FacebookIcon } from "@/components/SocialIcons";
-import { socialLinks } from "@/data/portfolio";
+import { GithubIcon, LinkedinIcon, InstagramIcon, FacebookIcon, DiscordIcon } from "@/components/SocialIcons";
+import { usePortfolioData } from "@/hooks/use-portfolio";
 import { z } from "zod";
 
 const WEB3FORMS_KEY = import.meta.env.VITE_WEB3FORMS_KEY;
@@ -26,16 +26,19 @@ const ContactSection = () => {
   const [form, setForm] = useState({ name: "", email: "", message: "", honeypot: "" });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error" | "config_error">("idle");
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const { data } = usePortfolioData();
+  const { socialLinks, about } = data;
 
   const iconMap = {
     Github: GithubIcon,
     Linkedin: LinkedinIcon,
     Instagram: InstagramIcon,
     Facebook: FacebookIcon,
+    Discord: DiscordIcon,
     Mail,
   } as const;
 
-  const emailLink = socialLinks.find((link) => link.name === "Email");
+  const emailLink = socialLinks.find((link) => link.name.toLowerCase() === "email" || link.icon === "Mail");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -218,7 +221,7 @@ const ContactSection = () => {
             <div className="glass-card p-5 rounded-2xl">
               <MapPin className="w-5 h-5 text-primary mb-2" />
               <p className="text-xs text-muted-foreground mb-1">Location</p>
-              <p className="text-foreground text-sm">Dhaka, Bangladesh</p>
+              <p className="text-foreground text-sm">{about.location || "Dhaka, Bangladesh"}</p>
             </div>
 
             <div className="glass-card p-5 rounded-2xl">

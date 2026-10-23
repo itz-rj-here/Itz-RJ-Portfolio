@@ -41,7 +41,7 @@ const Footer = () => {
         </motion.div>
 
         <motion.div
-          className="mt-8 pt-6 border-t border-border/50 text-center"
+          className="mt-8 pt-6 border-t border-border/50 flex flex-col sm:flex-row items-center justify-between gap-3 text-center"
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
           transition={{ delay: 0.4 }}
@@ -51,6 +51,12 @@ const Footer = () => {
             <Heart className="w-3 h-3 text-red-400 fill-red-400 inline" />
             All rights reserved.
           </p>
+          <a
+            href="/dashboard"
+            className="text-xs text-muted-foreground/70 hover:text-primary transition-colors"
+          >
+            Admin Dashboard
+          </a>
         </motion.div>
       </div>
     </footer>

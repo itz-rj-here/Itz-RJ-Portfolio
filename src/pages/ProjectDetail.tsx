@@ -2,14 +2,15 @@ import { useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
 import { GithubIcon } from "@/components/SocialIcons";
-import { projects } from "@/data/portfolio";
+import { usePortfolioData } from "@/hooks/use-portfolio";
 import { useState, useEffect, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
 
 const ProjectDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const project = projects.find((p) => p.id === id);
+  const { data } = usePortfolioData();
+  const project = data.projects.find((p) => p.id === id);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -218,29 +219,17 @@ const ProjectDetail = () => {
 
           {/* Technologies */}
           <motion.div
-            className="mb-12"
+            className="mb-12 p-6 rounded-2xl border border-border bg-card/60"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
           >
-            <h2 className="text-xl font-display font-semibold text-foreground mb-4">Technologies Used</h2>
-            <div className="flex flex-wrap gap-2">
-              {project.technologies.map((tech) => (
-                <motion.span
-                  key={tech}
-                  className="px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm border border-primary/20 cursor-default"
-                  whileHover={{
-                    scale: 1.15,
-                    backgroundColor: "hsl(211 78% 51% / 0.25)",
-                    boxShadow: "0 0 20px hsl(211 78% 51% / 0.3)",
-                    borderColor: "hsl(211 78% 51% / 0.5)",
-                  }}
-                  transition={{ type: "spring", stiffness: 400, damping: 15 }}
-                >
-                  {tech}
-                </motion.span>
-              ))}
-            </div>
+            <h2 className="text-lg font-display font-semibold text-foreground mb-2">
+              Technologies & Architecture
+            </h2>
+            <p className="text-sm text-primary font-medium leading-relaxed">
+              {project.technologies.join(" · ")}
+            </p>
           </motion.div>
 
           {/* Features */}
@@ -252,15 +241,15 @@ const ProjectDetail = () => {
             <h2 className="text-xl font-display font-semibold text-foreground mb-4">Key Features</h2>
             <div className="grid sm:grid-cols-2 gap-3">
               {project.features.map((feature, i) => (
-                <motion.div
+                <div
                   key={i}
-                  className="glass-card p-4 rounded-xl flex items-start gap-3"
-                  whileHover={{ scale: 1.02, borderColor: "hsl(211 78% 51% / 0.3)" }}
-                  transition={{ type: "spring", stiffness: 300 }}
+                  className="border border-border bg-card/60 p-4 rounded-xl flex items-start gap-3"
                 >
-                  <div className="w-2 h-2 rounded-full bg-primary mt-1.5 shrink-0" />
+                  <span className="text-xs font-mono text-primary font-semibold tabular-nums mt-0.5 shrink-0">
+                    {String(i + 1).padStart(2, "0")}.
+                  </span>
                   <p className="text-muted-foreground text-sm">{feature}</p>
-                </motion.div>
+                </div>
               ))}
             </div>
           </motion.div>

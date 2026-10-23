@@ -1,93 +1,80 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { skillCategories } from "@/data/portfolio";
+import { usePortfolioData } from "@/hooks/use-portfolio";
 
 const SkillsSection = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
+  const { data } = usePortfolioData();
+  const { skillCategories } = data;
 
   return (
     <section id="skills" className="py-24 md:py-32 relative">
-      <div className="container mx-auto px-4 md:px-8" ref={ref}>
-        <motion.p
-          className="text-primary text-sm tracking-[0.3em] uppercase text-center mb-3"
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-        >
-          What I work with
-        </motion.p>
-        <motion.h2
-          className="text-3xl md:text-5xl font-display font-bold text-center mb-16"
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.1 }}
-        >
-          Skills & <span className="gradient-text">Tech Stack</span>
-        </motion.h2>
+      <div className="container mx-auto px-4 md:px-8 max-w-6xl" ref={ref}>
+        <div className="max-w-2xl mb-14">
+          <motion.p
+            className="text-primary text-xs md:text-sm font-semibold mb-2"
+            initial={{ opacity: 0, y: 16 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+          >
+            03. Engineering Capabilities
+          </motion.p>
+          <motion.h2
+            className="text-3xl md:text-5xl font-display font-bold text-foreground tracking-tight"
+            initial={{ opacity: 0, y: 16 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.08 }}
+          >
+            Skills & <span className="gradient-text">Tech Stack</span>
+          </motion.h2>
+        </div>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-3 gap-6">
           {skillCategories.map((category, catIdx) => (
             <motion.div
               key={category.name}
-              className="glass-card p-6 rounded-2xl hover:glow-border transition-shadow duration-300"
-              initial={{ opacity: 0, y: 30 }}
+              className="rounded-2xl border border-border bg-card/60 p-6 md:p-7 flex flex-col justify-between"
+              initial={{ opacity: 0, y: 24 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.2 + catIdx * 0.15 }}
+              transition={{ delay: 0.12 + catIdx * 0.1 }}
             >
-              <h3 className="text-lg font-display font-semibold text-foreground mb-6">{category.name}</h3>
+              <div>
+                <div className="flex items-center justify-between pb-4 mb-6 border-b border-border/70">
+                  <h3 className="text-lg font-display font-bold text-foreground">
+                    {category.name}
+                  </h3>
+                  <span className="text-xs font-mono text-muted-foreground tabular-nums">
+                    {category.skills.length} skills
+                  </span>
+                </div>
 
-              {/* Skill pills */}
-              <div className="flex flex-wrap gap-2.5 mb-6">
-                {category.skills.map((skill, skillIdx) => (
-                  <motion.span
-                    key={skill.name}
-                    className="px-4 py-2 rounded-xl bg-secondary border border-border text-sm text-muted-foreground cursor-default select-none"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={inView ? { opacity: 1, scale: 1 } : {}}
-                    transition={{ delay: 0.4 + catIdx * 0.1 + skillIdx * 0.05 }}
-                    whileHover={{
-                      scale: 1.1,
-                      backgroundColor: "hsl(211 78% 51% / 0.15)",
-                      borderColor: "hsl(211 78% 51% / 0.4)",
-                      color: "hsl(207 90% 68%)",
-                      boxShadow: "0 0 20px hsl(211 78% 51% / 0.2)",
-                    }}
-                  >
-                    {skill.name}
-                  </motion.span>
-                ))}
+                {/* Clean Tabular Skill Proficiency Rows */}
+                <div className="space-y-4">
+                  {category.skills.map((skill) => (
+                    <div key={skill.name} className="space-y-1.5">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="font-medium text-foreground">{skill.name}</span>
+                        <span className="font-mono font-semibold text-primary tabular-nums">
+                          {skill.level}%
+                        </span>
+                      </div>
+                      <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
+                        <div
+                          className="h-full rounded-full bg-gradient-to-r from-primary to-accent transition-transform duration-700 ease-out origin-left"
+                          style={{
+                            transform: `scaleX(${inView ? skill.level / 100 : 0})`,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
 
-              {/* Animated progress bars */}
-              <div className="space-y-3">
-                {category.skills.map((skill, skillIdx) => (
-                  <div key={`${skill.name}-bar`}>
-                    <div className="flex justify-between text-xs mb-1">
-                      <span className="text-muted-foreground">{skill.name}</span>
-                      <motion.span
-                        className="text-primary font-medium"
-                        initial={{ opacity: 0 }}
-                        animate={inView ? { opacity: 1 } : {}}
-                        transition={{ delay: 0.6 + catIdx * 0.1 + skillIdx * 0.08 }}
-                      >
-                        {skill.level}%
-                      </motion.span>
-                    </div>
-                    <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
-                      <motion.div
-                        className="h-full rounded-full bg-gradient-to-r from-primary to-accent"
-                        initial={{ width: 0 }}
-                        animate={inView ? { width: `${skill.level}%` } : {}}
-                        transition={{
-                          duration: 1.2,
-                          delay: 0.5 + catIdx * 0.15 + skillIdx * 0.08,
-                          ease: "easeOut",
-                        }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
+              {/* Clean unboxed summary footer */}
+              <p className="mt-6 pt-4 border-t border-border/50 text-xs text-muted-foreground">
+                {category.skills.map((s) => s.name).join(" · ")}
+              </p>
             </motion.div>
           ))}
         </div>

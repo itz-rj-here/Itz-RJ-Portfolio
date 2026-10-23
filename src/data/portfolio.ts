@@ -377,11 +377,78 @@ export const skillCategories: SkillCategory[] = [
   },
 ];
 
-export const socialLinks = [
-  { name: "Facebook", url: "https://www.facebook.com/itzrjhere/", icon: "Facebook" },
-  { name: "Instagram", url: "https://www.instagram.com/certified_valochele/", icon: "Instagram" },
-  { name: "GitHub", url: "https://github.com/itz-rj-here", icon: "Github" },
-  { name: "LinkedIn", url: "https://www.linkedin.com/in/itz-rj/", icon: "Linkedin" },
-  { name: "Discord", url: "https://discordapp.com/users/722033282631467069/", icon: "Discord" },
-  { name: "Email", url: "mailto:faiadmahmudadil@gmail.com", icon: "Mail" },
+export interface SocialLink {
+  id?: string;
+  name: string;
+  url: string;
+  icon: string;
+}
+
+export interface AboutImage {
+  src: string;
+  alt: string;
+}
+
+export interface AboutData {
+  fullName: string;
+  subtitle: string;
+  location: string;
+  heroHeadline?: string;
+  heroBio?: string;
+  heroRoles?: string[];
+  bioParagraphs: string[];
+  aboutImages: AboutImage[];
+}
+
+export interface PortfolioData {
+  projects: Project[];
+  certificates: Certificate[];
+  skillCategories: SkillCategory[];
+  about: AboutData;
+  socialLinks: SocialLink[];
+}
+
+export const defaultAboutData: AboutData = {
+  fullName: "Md. Faiad Mahmud Adil",
+  subtitle: "aka It'z RJ",
+  location: "Dhaka, Bangladesh",
+  heroHeadline: "Designing & engineering modern web experiences.",
+  heroBio:
+    "Frontend developer and open-source collaborator from Dhaka crafting high-performance interfaces with React, TypeScript, and clean architectural precision.",
+  heroRoles: [
+    "Student Developer",
+    "Frontend Engineer",
+    "Open Source Collaborator",
+    "UI/UX Enthusiast",
+    "Creative Technologist",
+  ],
+  bioParagraphs: [
+    "I'm a passionate student developer on a mission to build clean, impactful digital experiences. My journey into programming started with curiosity and quickly grew into a deep love for creating things that people actually use.",
+    "With a focus on frontend development and a growing interest in full-stack technologies, I bring together design sensibility and technical skills to craft modern web applications.",
+    "When I'm not coding, you'll find me exploring new technologies, contributing to open-source projects, and constantly pushing my boundaries as a developer.",
+  ],
+  aboutImages: [
+    { src: "https://i.ibb.co.com/gMdpT7xc/pfp.png", alt: "Default profile image" },
+    { src: "https://i.ibb.co.com/fVwCzWCK/pfp2.png", alt: "Real profile image" },
+    { src: "https://i.ibb.co.com/Q7WxxM2F/pfp3.png", alt: "At the DU" },
+    { src: "https://i.ibb.co.com/TMjGtdqj/pfp4.png", alt: "At a tour" },
+  ],
+};
+
+export const socialLinks: SocialLink[] = [
+  { id: "social-1", name: "Facebook", url: "https://www.facebook.com/itzrjhere/", icon: "Facebook" },
+  { id: "social-2", name: "Instagram", url: "https://www.instagram.com/certified_valochele/", icon: "Instagram" },
+  { id: "social-3", name: "GitHub", url: "https://github.com/itz-rj-here", icon: "Github" },
+  { id: "social-4", name: "LinkedIn", url: "https://www.linkedin.com/in/itz-rj/", icon: "Linkedin" },
+  { id: "social-5", name: "Discord", url: "https://discordapp.com/users/722033282631467069/", icon: "Discord" },
+  { id: "social-6", name: "Email", url: "mailto:faiadmahmudadil@gmail.com", icon: "Mail" },
 ];
+
+export const defaultPortfolioData: PortfolioData = {
+  projects,
+  certificates,
+  skillCategories,
+  about: defaultAboutData,
+  socialLinks,
+};
+
