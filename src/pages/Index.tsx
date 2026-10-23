@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import Header from "@/components/Header";
@@ -12,6 +12,7 @@ import Footer from "@/components/Footer";
 import IntroScreen from "@/components/IntroScreen";
 import ScrollToTop from "@/components/ScrollToTop";
 import SectionDivider from "@/components/SectionDivider";
+import { usePortfolioData } from "@/hooks/use-portfolio";
 
 // Plays the loading screen on initial page load / refresh,
 // and skips it when navigating back within the SPA.
@@ -20,6 +21,8 @@ let hasPlayedIntroThisLoad = false;
 const Index = () => {
   const [showIntro, setShowIntro] = useState(() => !hasPlayedIntroThisLoad);
   const [contentEntered, setContentEntered] = useState(() => hasPlayedIntroThisLoad);
+  const { data } = usePortfolioData();
+  const { projects, about, socialLinks, skillCategories } = data;
 
   useEffect(() => {
     if (showIntro) {
@@ -38,38 +41,155 @@ const Index = () => {
     setShowIntro(false);
   }, []);
 
-  const personJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    name: "Md. Faiad Mahmud Adil",
-    alternateName: "It'z RJ",
-    jobTitle: "Student Developer",
-    url: "/",
-    sameAs: [
-      "https://www.facebook.com/itzrjhere/",
-      "https://www.instagram.com/certified_valochele/",
-      "https://github.com/itz-rj-here",
-      "https://www.linkedin.com/in/itz-rj/",
-    ],
-  };
+  // Dynamically compute SEO metadata & JSON-LD from Supabase portfolio data
+  const seoMetadata = useMemo(() => {
+    const origin =
+      typeof window !== "undefined" ? window.location.origin : "https://itzrj.vercel.app";
+    const canonicalUrl = `${origin}/`;
+
+    const featuredProjectTitles = projects
+      .slice(0, 3)
+      .map((p) => p.seoTitle || p.title)
+      .join(", ");
+
+    const pageTitle = `${about.fullName} (${about.subtitle.replace("aka ", "")}) — Developer Portfolio`;
+
+    const rawDescription = featuredProjectTitles
+      ? `Portfolio of ${about.fullName} (${about.subtitle}). Explore ${projects.length}+ projects including ${featuredProjectTitles}, built with React, TypeScript & Tailwind CSS.`
+      : `Portfolio of ${about.fullName} (${about.subtitle}), a developer from ${about.location} building modern web experiences with React and TypeScript.`;
+
+    const metaDescription = rawDescription.slice(0, 160);
+
+    // Primary social sharing preview image (featured project cover or profile portrait)
+    const primaryOgImage =
+      projects[0]?.image ||
+      about.aboutImages[0]?.src ||
+      "https://i.ibb.co.com/gMdpT7xc/pfp.png";
+
+    // Aggregate keywords across projects & skills for search engine indexing
+    const allKeywords = Array.from(
+      new Set([
+        about.fullName,
+        "It'z RJ",
+        "Portfolio",
+        ...projects.flatMap((p) => [
+          p.seoTitle || p.title,
+          ...(p.seoKeywords || []),
+          ...p.technologies,
+        ]),
+        ...skillCategories.flatMap((c) => c.skills.map((s) => s.name)),
+      ])
+    ).join(", ");
+
+    const sameAsUrls = socialLinks
+      .filter((s) => s.url.startsWith("http"))
+      .map((s) => s.url);
+
+    // Rich Schema.org Graph: Person + ItemList of every Supabase project with its SEO fields
+    const structuredData = {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Person",
+          "@id": `${origin}/#person`,
+          name: about.fullName,
+          alternateName: "It'z RJ",
+          jobTitle: about.heroRoles?.[0] || "Student Developer",
+          description: about.heroBio || metaDescription,
+          image: about.aboutImages[0]?.src,
+          url: canonicalUrl,
+          address: {
+            "@type": "PostalAddress",
+            addressLocality: about.location || "Dhaka, Bangladesh",
+          },
+          sameAs: sameAsUrls,
+        },
+        {
+          "@type": "ItemList",
+          "@id": `${origin}/#projects`,
+          name: "Featured Portfolio Projects",
+          description: `Projects engineered and maintained by ${about.fullName}`,
+          numberOfItems: projects.length,
+          itemListElement: projects.map((project, idx) => ({
+            "@type": "ListItem",
+            position: idx + 1,
+            item: {
+              "@type": "CreativeWork",
+              "@id": `${origin}/project/${project.id}`,
+              name: project.seoTitle || project.title,
+              headline: project.seoTitle || project.title,
+              description: project.seoDescription || project.shortDescription,
+              image: project.image,
+              url: project.liveUrl || `${origin}/project/${project.id}`,
+              keywords: (project.seoKeywords?.length
+                ? project.seoKeywords
+                : project.technologies
+              ).join(", "),
+              author: {
+                "@id": `${origin}/#person`,
+              },
+            },
+          })),
+        },
+      ],
+    };
+
+    return {
+      pageTitle,
+      metaDescription,
+      canonicalUrl,
+      primaryOgImage,
+      allKeywords,
+      structuredData,
+    };
+  }, [projects, about, socialLinks, skillCategories]);
 
   return (
     <>
       <Helmet>
-        <title>It'z RJ — Student Developer Portfolio</title>
-        <meta
-          name="description"
-          content="Portfolio of Md. Faiad Mahmud Adil (It'z RJ), a student developer from Dhaka building clean, modern web experiences with React, TypeScript, and Tailwind CSS."
-        />
-        <link rel="canonical" href="/" />
-        <meta property="og:title" content="It'z RJ — Student Developer Portfolio" />
-        <meta
-          property="og:description"
-          content="Personal portfolio and project showcase of It'z RJ — student developer from Dhaka, Bangladesh."
-        />
-        <meta property="og:url" content="/" />
+        <title>{seoMetadata.pageTitle}</title>
+        <meta name="description" content={seoMetadata.metaDescription} />
+        <meta name="keywords" content={seoMetadata.allKeywords} />
+        <meta name="author" content={about.fullName} />
+        <link rel="canonical" href={seoMetadata.canonicalUrl} />
+
+        {/* OpenGraph Social Sharing Preview Cards */}
         <meta property="og:type" content="website" />
-        <script type="application/ld+json">{JSON.stringify(personJsonLd)}</script>
+        <meta property="og:site_name" content={`${about.fullName} Portfolio`} />
+        <meta property="og:title" content={seoMetadata.pageTitle} />
+        <meta property="og:description" content={seoMetadata.metaDescription} />
+        <meta property="og:url" content={seoMetadata.canonicalUrl} />
+        <meta property="og:image" content={seoMetadata.primaryOgImage} />
+        <meta property="og:image:alt" content={projects[0]?.title || about.fullName} />
+
+        {/* Additional OpenGraph images for each project fetched from Supabase */}
+        {projects.slice(1, 5).map((proj) =>
+          proj.image ? (
+            <meta key={`og-img-${proj.id}`} property="og:image" content={proj.image} />
+          ) : null
+        )}
+
+        {/* Twitter / X Large Preview Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seoMetadata.pageTitle} />
+        <meta name="twitter:description" content={seoMetadata.metaDescription} />
+        <meta name="twitter:image" content={seoMetadata.primaryOgImage} />
+
+        {/* Per-Project Dynamic Meta Descriptors for Crawlers */}
+        {projects.map((proj, index) => (
+          <meta
+            key={`proj-seo-${proj.id}`}
+            name={`portfolio:project:${index + 1}`}
+            content={`${proj.seoTitle || proj.title} — ${
+              proj.seoDescription || proj.shortDescription
+            } (${proj.technologies.join(", ")})`}
+          />
+        ))}
+
+        {/* Schema.org JSON-LD Graph (Person + All Supabase Projects) */}
+        <script type="application/ld+json">
+          {JSON.stringify(seoMetadata.structuredData)}
+        </script>
       </Helmet>
 
       {showIntro && <IntroScreen onComplete={handleIntroComplete} />}

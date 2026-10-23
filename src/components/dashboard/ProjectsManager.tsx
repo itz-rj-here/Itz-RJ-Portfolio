@@ -94,6 +94,8 @@ export const ProjectsManager = ({ projects }: ProjectsManagerProps) => {
       images: galleryImages,
       liveUrl: editingProject.liveUrl?.trim() || undefined,
       githubUrl: editingProject.githubUrl?.trim() || undefined,
+      seoTitle: editingProject.seoTitle?.trim() || undefined,
+      seoDescription: editingProject.seoDescription?.trim() || undefined,
     };
 
     const nextList = isNew
@@ -586,6 +588,40 @@ export const ProjectsManager = ({ projects }: ProjectsManagerProps) => {
                       </button>
                     </div>
                   ))}
+                </div>
+              </div>
+
+              {/* Optional SEO & Social Card Metadata */}
+              <div className="space-y-3 pt-2 border-t border-border/60">
+                <label className="text-xs font-medium text-muted-foreground block">
+                  SEO & Social Sharing Metadata (Optional — auto-falls back to Title & Short Summary)
+                </label>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <div>
+                    <input
+                      type="text"
+                      value={editingProject.seoTitle || ""}
+                      onChange={(e) =>
+                        setEditingProject({ ...editingProject, seoTitle: e.target.value })
+                      }
+                      placeholder="Custom SEO Title (30-60 chars)"
+                      className="w-full px-3 py-2 rounded-lg bg-secondary border border-border text-xs text-foreground"
+                    />
+                  </div>
+                  <div>
+                    <input
+                      type="text"
+                      value={editingProject.seoDescription || ""}
+                      onChange={(e) =>
+                        setEditingProject({
+                          ...editingProject,
+                          seoDescription: e.target.value,
+                        })
+                      }
+                      placeholder="Custom Social Card Description (120-160 chars)"
+                      className="w-full px-3 py-2 rounded-lg bg-secondary border border-border text-xs text-foreground"
+                    />
+                  </div>
                 </div>
               </div>
 

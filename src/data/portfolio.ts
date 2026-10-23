@@ -9,6 +9,9 @@ export interface Project {
   features: string[];
   liveUrl?: string;
   githubUrl?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  seoKeywords?: string[];
 }
 
 export interface Certificate {

@@ -53,30 +53,50 @@ const ProjectDetail = () => {
     );
   }
 
-  const metaDescription = project.shortDescription.slice(0, 160);
-  const canonicalPath = `/project/${project.id}`;
+  const origin =
+    typeof window !== "undefined" ? window.location.origin : "https://itzrj.vercel.app";
+  const seoTitle = project.seoTitle?.trim() || `${project.title} | It'z RJ's Portfolio`;
+  const metaDescription = (project.seoDescription?.trim() || project.shortDescription).slice(
+    0,
+    160
+  );
+  const seoKeywords = (
+    project.seoKeywords?.length ? project.seoKeywords : project.technologies
+  ).join(", ");
+  const canonicalUrl = `${origin}/project/${project.id}`;
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "CreativeWork",
-    name: project.title,
-    description: project.shortDescription,
+    name: project.seoTitle?.trim() || project.title,
+    headline: project.seoTitle?.trim() || project.title,
+    description: metaDescription,
     image: project.image,
-    url: canonicalPath,
-    keywords: project.technologies.join(", "),
-    author: { "@type": "Person", name: "Md. Faiad Mahmud Adil", alternateName: "It'z RJ" },
+    url: canonicalUrl,
+    keywords: seoKeywords,
+    author: {
+      "@type": "Person",
+      name: data.about.fullName || "Md. Faiad Mahmud Adil",
+      alternateName: "It'z RJ",
+    },
   };
 
   return (
     <div className="min-h-screen gradient-bg">
       <Helmet>
-        <title>{`${project.title} | It'z RJ's Portfolio`}</title>
+        <title>{seoTitle}</title>
         <meta name="description" content={metaDescription} />
-        <link rel="canonical" href={canonicalPath} />
-        <meta property="og:title" content={`${project.title} | It'z RJ's Portfolio`} />
+        <meta name="keywords" content={seoKeywords} />
+        <link rel="canonical" href={canonicalUrl} />
+        <meta property="og:title" content={seoTitle} />
         <meta property="og:description" content={metaDescription} />
-        <meta property="og:url" content={canonicalPath} />
+        <meta property="og:url" content={canonicalUrl} />
         <meta property="og:type" content="article" />
         <meta property="og:image" content={project.image} />
+        <meta property="og:image:alt" content={project.title} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seoTitle} />
+        <meta name="twitter:description" content={metaDescription} />
+        <meta name="twitter:image" content={project.image} />
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
       <div className="container mx-auto px-4 md:px-8 py-8">
