@@ -8,6 +8,7 @@ import {
   updateAboutApi,
   updateSocialsApi,
   resetPortfolioApi,
+  saveFullPortfolioData,
 } from "@/lib/supabase";
 
 export const PORTFOLIO_QUERY_KEY = ["portfolio-data"] as const;
@@ -16,47 +17,60 @@ export function usePortfolioData() {
   return useQuery<PortfolioData>({
     queryKey: PORTFOLIO_QUERY_KEY,
     queryFn: fetchPortfolioData,
-    initialData: defaultPortfolioData,
-    staleTime: 1000 * 30,
+    placeholderData: defaultPortfolioData,
+    staleTime: 0,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
   });
 }
 
 export function usePortfolioMutations() {
   const queryClient = useQueryClient();
 
-  const invalidate = () => {
+  const applySavedData = (saved: PortfolioData) => {
+    queryClient.setQueryData(PORTFOLIO_QUERY_KEY, saved);
     queryClient.invalidateQueries({ queryKey: PORTFOLIO_QUERY_KEY });
   };
 
   const updateProjects = useMutation({
     mutationFn: updateProjectsApi,
-    onSuccess: invalidate,
+    onSuccess: applySavedData,
   });
 
   const updateCertificates = useMutation({
     mutationFn: updateCertificatesApi,
-    onSuccess: invalidate,
+    onSuccess: applySavedData,
   });
 
   const updateSkills = useMutation({
     mutationFn: updateSkillsApi,
-    onSuccess: invalidate,
+    onSuccess: applySavedData,
   });
 
   const updateAbout = useMutation({
     mutationFn: updateAboutApi,
-    onSuccess: invalidate,
+    onSuccess: applySavedData,
   });
 
   const updateSocials = useMutation({
-    mutationFn: ({ socialLinks, location }: { socialLinks: PortfolioData["socialLinks"]; location?: string }) =>
-      updateSocialsApi(socialLinks, location),
-    onSuccess: invalidate,
+    mutationFn: ({
+      socialLinks,
+      location,
+    }: {
+      socialLinks: PortfolioData["socialLinks"];
+      location?: string;
+    }) => updateSocialsApi(socialLinks, location),
+    onSuccess: applySavedData,
   });
 
   const resetPortfolio = useMutation({
     mutationFn: resetPortfolioApi,
-    onSuccess: invalidate,
+    onSuccess: applySavedData,
+  });
+
+  const syncToSupabase = useMutation({
+    mutationFn: (currentData: PortfolioData) => saveFullPortfolioData(currentData),
+    onSuccess: applySavedData,
   });
 
   return {
@@ -66,5 +80,6 @@ export function usePortfolioMutations() {
     updateAbout,
     updateSocials,
     resetPortfolio,
+    syncToSupabase,
   };
 }

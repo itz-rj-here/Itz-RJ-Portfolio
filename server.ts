@@ -22,17 +22,21 @@ const DATA_DIR = path.resolve(process.cwd(), "data");
 const UPLOADS_DIR = path.resolve(process.cwd(), "public", "uploads");
 const STORE_PATH = path.join(DATA_DIR, "portfolio-store.json");
 
-if (!fs.existsSync(DATA_DIR)) {
-  fs.mkdirSync(DATA_DIR, { recursive: true });
-}
-if (!fs.existsSync(UPLOADS_DIR)) {
-  fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+try {
+  if (!fs.existsSync(DATA_DIR)) {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+  }
+  if (!fs.existsSync(UPLOADS_DIR)) {
+    fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+  }
+} catch {
+  // Ignore on read-only serverless filesystems (e.g., Vercel)
 }
 
 // Serve uploaded images statically
 app.use("/uploads", express.static(UPLOADS_DIR));
 
-// Supabase client initialized from environment variables
+// Supabase configuration
 const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || "";
 const supabaseKey =
   process.env.SUPABASE_SERVICE_ROLE_KEY ||
@@ -49,25 +53,48 @@ if (supabaseUrl && supabaseKey) {
   }
 }
 
-// Portfolio Data Store with Supabase + Pre-seeded Fallback
-async function getPortfolioData(): Promise<PortfolioData> {
-  if (supabase) {
+/**
+ * Creates a request-scoped Supabase client carrying the user's Bearer JWT
+ * so Row Level Security (RLS) policies for `authenticated` users succeed.
+ */
+function getScopedSupabase(token?: string): SupabaseClient | null {
+  if (!supabaseUrl || !supabaseKey) return null;
+  if (!token) return supabase;
+  return createClient(supabaseUrl, supabaseKey, {
+    global: {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
+}
+
+// Portfolio Data Store with Supabase + Local JSON Sync
+async function getPortfolioData(token?: string): Promise<PortfolioData> {
+  const client = getScopedSupabase(token);
+  if (client) {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await client
         .from("portfolio_content")
         .select("payload")
         .eq("id", "main")
-        .single();
+        .maybeSingle();
       if (!error && data && data.payload) {
-        return data.payload as PortfolioData;
+        const remoteData = data.payload as PortfolioData;
+        try {
+          fs.writeFileSync(STORE_PATH, JSON.stringify(remoteData, null, 2), "utf-8");
+        } catch {
+          // Ignore on read-only filesystem
+        }
+        return remoteData;
       }
     } catch {
       // Fallback to local store if table is not created yet
     }
   }
 
-  if (fs.existsSync(STORE_PATH)) {
-    try {
+  try {
+    if (fs.existsSync(STORE_PATH)) {
       const raw = fs.readFileSync(STORE_PATH, "utf-8");
       const parsed = JSON.parse(raw) as PortfolioData;
       return {
@@ -77,32 +104,51 @@ async function getPortfolioData(): Promise<PortfolioData> {
         about: parsed.about || defaultPortfolioData.about,
         socialLinks: parsed.socialLinks || defaultPortfolioData.socialLinks,
       };
-    } catch {
-      // Fallback to default seed
     }
+  } catch {
+    // Fallback to default seed
   }
 
   // Pre-seed with default portfolio items on first load
-  await savePortfolioData(defaultPortfolioData);
+  await savePortfolioData(defaultPortfolioData, token);
   return JSON.parse(JSON.stringify(defaultPortfolioData));
 }
 
-async function savePortfolioData(data: PortfolioData): Promise<void> {
-  fs.writeFileSync(STORE_PATH, JSON.stringify(data, null, 2), "utf-8");
+async function savePortfolioData(data: PortfolioData, token?: string): Promise<void> {
+  try {
+    fs.writeFileSync(STORE_PATH, JSON.stringify(data, null, 2), "utf-8");
+  } catch {
+    // Ignore on read-only serverless filesystem
+  }
 
-  if (supabase) {
+  const client = getScopedSupabase(token);
+  if (client) {
     try {
-      await supabase
+      const { error } = await client
         .from("portfolio_content")
-        .upsert({ id: "main", payload: data, updated_at: new Date().toISOString() });
-    } catch {
-      // Ignore if remote table is not configured yet
+        .upsert(
+          { id: "main", payload: data, updated_at: new Date().toISOString() },
+          { onConflict: "id" }
+        );
+      if (error) {
+        console.warn("Supabase upsert warning:", error.message);
+      }
+    } catch (e) {
+      console.warn("Supabase save error:", e);
     }
   }
 }
 
+interface AuthenticatedRequest extends Request {
+  supabaseToken?: string;
+}
+
 // Supabase Authentication Middleware
-async function requireSupabaseAuth(req: Request, res: Response, next: NextFunction) {
+async function requireSupabaseAuth(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) {
   if (!supabase) {
     res.status(503).json({
       error: "Supabase is not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.",
@@ -124,6 +170,7 @@ async function requireSupabaseAuth(req: Request, res: Response, next: NextFuncti
       res.status(401).json({ error: "Unauthorized: Invalid or expired Supabase session" });
       return;
     }
+    req.supabaseToken = token;
     next();
   } catch {
     res.status(401).json({ error: "Unauthorized: Failed to verify Supabase token" });
@@ -145,8 +192,24 @@ app.get("/api/portfolio", async (_req: Request, res: Response) => {
   }
 });
 
+// PUT full portfolio data (Supabase Authenticated)
+app.put("/api/portfolio", requireSupabaseAuth, async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const { portfolio } = req.body as { portfolio: PortfolioData };
+    if (!portfolio || typeof portfolio !== "object") {
+      res.status(400).json({ error: "Invalid portfolio payload" });
+      return;
+    }
+    await savePortfolioData(portfolio, req.supabaseToken);
+    res.json({ portfolio });
+  } catch (error) {
+    console.error("Error saving full portfolio:", error);
+    res.status(500).json({ error: "Failed to save portfolio data" });
+  }
+});
+
 // POST image upload (Supabase Authenticated)
-app.post("/api/upload", requireSupabaseAuth, async (req: Request, res: Response) => {
+app.post("/api/upload", requireSupabaseAuth, async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { fileName, dataUrl } = req.body || {};
     if (!dataUrl || typeof dataUrl !== "string") {
@@ -180,10 +243,11 @@ app.post("/api/upload", requireSupabaseAuth, async (req: Request, res: Response)
       .slice(0, 40);
     const uniqueName = `${safeBase}-${Date.now()}.${ext}`;
 
-    // Upload to Supabase Storage bucket 'portfolio' if available
-    if (supabase) {
+    // Upload to Supabase Storage bucket 'portfolio' using the user's authenticated token
+    const client = getScopedSupabase(req.supabaseToken);
+    if (client) {
       try {
-        const { data: uploadData, error: uploadError } = await supabase.storage
+        const { data: uploadData, error: uploadError } = await client.storage
           .from("portfolio")
           .upload(`uploads/${uniqueName}`, buffer, {
             contentType: mimeType,
@@ -191,7 +255,7 @@ app.post("/api/upload", requireSupabaseAuth, async (req: Request, res: Response)
           });
 
         if (!uploadError && uploadData) {
-          const { data: publicUrlData } = supabase.storage
+          const { data: publicUrlData } = client.storage
             .from("portfolio")
             .getPublicUrl(`uploads/${uniqueName}`);
           if (publicUrlData?.publicUrl) {
@@ -214,16 +278,16 @@ app.post("/api/upload", requireSupabaseAuth, async (req: Request, res: Response)
 });
 
 // PUT update projects list
-app.put("/api/projects", requireSupabaseAuth, async (req: Request, res: Response) => {
+app.put("/api/projects", requireSupabaseAuth, async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { projects } = req.body as { projects: Project[] };
     if (!Array.isArray(projects)) {
       res.status(400).json({ error: "Invalid projects array" });
       return;
     }
-    const data = await getPortfolioData();
+    const data = await getPortfolioData(req.supabaseToken);
     data.projects = projects;
-    await savePortfolioData(data);
+    await savePortfolioData(data, req.supabaseToken);
     res.json({ projects: data.projects });
   } catch (error) {
     console.error("Error updating projects:", error);
@@ -232,34 +296,38 @@ app.put("/api/projects", requireSupabaseAuth, async (req: Request, res: Response
 });
 
 // PUT update certificates list
-app.put("/api/certificates", requireSupabaseAuth, async (req: Request, res: Response) => {
-  try {
-    const { certificates } = req.body as { certificates: Certificate[] };
-    if (!Array.isArray(certificates)) {
-      res.status(400).json({ error: "Invalid certificates array" });
-      return;
+app.put(
+  "/api/certificates",
+  requireSupabaseAuth,
+  async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const { certificates } = req.body as { certificates: Certificate[] };
+      if (!Array.isArray(certificates)) {
+        res.status(400).json({ error: "Invalid certificates array" });
+        return;
+      }
+      const data = await getPortfolioData(req.supabaseToken);
+      data.certificates = certificates;
+      await savePortfolioData(data, req.supabaseToken);
+      res.json({ certificates: data.certificates });
+    } catch (error) {
+      console.error("Error updating certificates:", error);
+      res.status(500).json({ error: "Failed to update certificates" });
     }
-    const data = await getPortfolioData();
-    data.certificates = certificates;
-    await savePortfolioData(data);
-    res.json({ certificates: data.certificates });
-  } catch (error) {
-    console.error("Error updating certificates:", error);
-    res.status(500).json({ error: "Failed to update certificates" });
   }
-});
+);
 
 // PUT update skills categories & items
-app.put("/api/skills", requireSupabaseAuth, async (req: Request, res: Response) => {
+app.put("/api/skills", requireSupabaseAuth, async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { skillCategories } = req.body as { skillCategories: SkillCategory[] };
     if (!Array.isArray(skillCategories)) {
       res.status(400).json({ error: "Invalid skillCategories array" });
       return;
     }
-    const data = await getPortfolioData();
+    const data = await getPortfolioData(req.supabaseToken);
     data.skillCategories = skillCategories;
-    await savePortfolioData(data);
+    await savePortfolioData(data, req.supabaseToken);
     res.json({ skillCategories: data.skillCategories });
   } catch (error) {
     console.error("Error updating skills:", error);
@@ -268,16 +336,16 @@ app.put("/api/skills", requireSupabaseAuth, async (req: Request, res: Response) 
 });
 
 // PUT update About section (bio text + profile images)
-app.put("/api/about", requireSupabaseAuth, async (req: Request, res: Response) => {
+app.put("/api/about", requireSupabaseAuth, async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { about } = req.body as { about: AboutData };
     if (!about || typeof about !== "object") {
       res.status(400).json({ error: "Invalid about data" });
       return;
     }
-    const data = await getPortfolioData();
+    const data = await getPortfolioData(req.supabaseToken);
     data.about = about;
-    await savePortfolioData(data);
+    await savePortfolioData(data, req.supabaseToken);
     res.json({ about: data.about });
   } catch (error) {
     console.error("Error updating about section:", error);
@@ -286,7 +354,7 @@ app.put("/api/about", requireSupabaseAuth, async (req: Request, res: Response) =
 });
 
 // PUT update social links & contact info
-app.put("/api/socials", requireSupabaseAuth, async (req: Request, res: Response) => {
+app.put("/api/socials", requireSupabaseAuth, async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { socialLinks, location } = req.body as {
       socialLinks: SocialLink[];
@@ -296,12 +364,12 @@ app.put("/api/socials", requireSupabaseAuth, async (req: Request, res: Response)
       res.status(400).json({ error: "Invalid socialLinks array" });
       return;
     }
-    const data = await getPortfolioData();
+    const data = await getPortfolioData(req.supabaseToken);
     data.socialLinks = socialLinks;
     if (typeof location === "string") {
       data.about.location = location;
     }
-    await savePortfolioData(data);
+    await savePortfolioData(data, req.supabaseToken);
     res.json({ socialLinks: data.socialLinks, location: data.about.location });
   } catch (error) {
     console.error("Error updating social links:", error);
@@ -310,10 +378,10 @@ app.put("/api/socials", requireSupabaseAuth, async (req: Request, res: Response)
 });
 
 // POST reset to initial pre-seeded portfolio items
-app.post("/api/reset", requireSupabaseAuth, async (_req: Request, res: Response) => {
+app.post("/api/reset", requireSupabaseAuth, async (req: AuthenticatedRequest, res: Response) => {
   try {
     const freshSeed = JSON.parse(JSON.stringify(defaultPortfolioData)) as PortfolioData;
-    await savePortfolioData(freshSeed);
+    await savePortfolioData(freshSeed, req.supabaseToken);
     res.json(freshSeed);
   } catch (error) {
     console.error("Error resetting portfolio data:", error);

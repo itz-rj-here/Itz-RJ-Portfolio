@@ -42,7 +42,7 @@ const Dashboard = () => {
   const [savingPassword, setSavingPassword] = useState(false);
 
   const { data } = usePortfolioData();
-  const { resetPortfolio } = usePortfolioMutations();
+  const { resetPortfolio, syncToSupabase } = usePortfolioMutations();
 
   useEffect(() => {
     checkAdminSession().then(({ authenticated, email }) => {
@@ -72,6 +72,15 @@ const Dashboard = () => {
     await logoutAdmin();
     toast.success("Signed out of Supabase session");
     navigate("/login", { replace: true });
+  };
+
+  const handleManualSync = async () => {
+    try {
+      await syncToSupabase.mutateAsync(data);
+      toast.success("All portfolio data synced to Supabase database");
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Failed to sync to Supabase");
+    }
   };
 
   const handleResetData = async () => {
@@ -181,6 +190,19 @@ const Dashboard = () => {
         <div className="p-4 border-t border-border space-y-2 hidden md:block">
           <button
             type="button"
+            disabled={syncToSupabase.isPending}
+            onClick={handleManualSync}
+            className="w-full px-3.5 py-2 rounded-lg text-xs font-medium text-primary bg-primary/10 hover:bg-primary/20 flex items-center gap-2 transition-colors disabled:opacity-50"
+          >
+            {syncToSupabase.isPending ? (
+              <LoaderCircle className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <Check className="w-3.5 h-3.5" />
+            )}
+            Sync Data to Supabase
+          </button>
+          <button
+            type="button"
             onClick={() => setShowPasswordModal(true)}
             className="w-full px-3.5 py-2 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-secondary/60 flex items-center gap-2 transition-colors"
           >
@@ -214,6 +236,22 @@ const Dashboard = () => {
           </div>
 
           <div className="flex items-center gap-3 shrink-0">
+            <button
+              type="button"
+              disabled={syncToSupabase.isPending}
+              onClick={handleManualSync}
+              className="px-3.5 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 flex items-center gap-1.5 transition-colors whitespace-nowrap shrink-0 disabled:opacity-50"
+            >
+              {syncToSupabase.isPending ? (
+                <>
+                  <LoaderCircle className="w-3.5 h-3.5 animate-spin" /> Syncing...
+                </>
+              ) : (
+                <>
+                  <Check className="w-3.5 h-3.5" /> Sync to Supabase
+                </>
+              )}
+            </button>
             <button
               type="button"
               onClick={() => navigate("/")}
